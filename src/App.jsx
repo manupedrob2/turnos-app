@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import './App.css';
-import logo from '/logo.png'; 
+import logo from '/logo.png'; // Asegúrate de que la ruta sea correcta (./ si está en src)
 
 // CONFIGURACIÓN DEFAULT
 const DEFAULT_CONFIG = {
@@ -11,6 +11,9 @@ const DEFAULT_CONFIG = {
     hora_cierre: "19:00", // Cierre lógico para agregar el último a mano
     intervalo: 40
 };
+
+// CONSTANTE TELEFONO (Asegúrate de que este número sea el correcto, sin espacios ni guiones)
+const TELEFONO_BARBERO = "5492392557958"; 
 
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -46,7 +49,7 @@ function App() {
   const [formData, setFormData] = useState({ 
       nombre: "", 
       telefono: "", 
-      barba: false // Solo queda Barba como opcional
+      barba: false 
   });
 
   const daysOfWeek = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'];
@@ -86,7 +89,6 @@ function App() {
           slots.push(`${h}:${m}`);
           current.setMinutes(current.getMinutes() + globalConfig.intervalo);
       }
-      // Regla de negocio: Último turno siempre a las 19:20 si no existe
       if (!slots.includes("19:20")) slots.push("19:20");
       return slots;
   };
@@ -157,31 +159,20 @@ function App() {
       fetchTurnos(selectedDateObj);
   };
 
-const handleSaveGlobalConfig = async (e) => {
+  const handleSaveGlobalConfig = async (e) => {
       e.preventDefault();
-      
-      // CORRECCIÓN: Usamos parseInt para asegurar que sean números
       const newConfig = {
           precio: parseInt(e.target.precio.value), 
           precio_barba: parseInt(e.target.precio_barba.value),
           hora_apertura: e.target.apertura.value,
           hora_cierre: e.target.cierre.value
       };
-
-      console.log("Enviando configuración:", newConfig); // Para ver en consola si hay error
-
-      // Usamos update sin where (o con gt 0) asumiendo que solo hay una fila de config
-      const { error } = await supabase
-        .from('configuracion')
-        .update(newConfig)
-        .gt('id', 0); // Actualiza cualquier fila con ID > 0
-      
+      const { error } = await supabase.from('configuracion').update(newConfig).gt('id', 0); 
       if (!error) {
           setGlobalConfig({...globalConfig, ...newConfig});
           setShowConfigModal(false);
           alert("Configuración guardada correctamente");
       } else {
-          console.error(error);
           alert("Error al guardar: " + error.message);
       }
   };
@@ -233,11 +224,7 @@ const handleSaveGlobalConfig = async (e) => {
   const handleConfirmar = async (e) => {
     e.preventDefault();
     const fechaString = selectedDateObj.toISOString().split('T')[0];
-    
-    // Nombre base implica Corte + Cejas
     let nombreFinal = formData.nombre;
-    
-    // Si selecciona barba, se agrega al nombre
     if (formData.barba) {
         nombreFinal += " (+ Barba)";
     }
@@ -253,9 +240,18 @@ const handleSaveGlobalConfig = async (e) => {
     else { await fetchTurnos(selectedDateObj); setStep(3); }
   };
 
+  // --- FUNCIÓN WHATSAPP CORREGIDA ---
   const handleWhatsAppClick = () => {
-    const msg = `Hola! Soy *${formData.nombre}*. Turno: *${new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(selectedDateObj)}* a las *${horaSeleccionada} hs*.`;
-    window.open(`https://wa.me/${TELEFONO_BARBERO}?text=${encodeURIComponent(msg)}`, '_blank');
+    let nombreMensaje = formData.nombre;
+    // Agregamos info de barba si corresponde
+    if (formData.barba) nombreMensaje += " (Con Barba)";
+
+    const fechaTexto = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(selectedDateObj);
+    
+    const mensaje = `Hola! Soy *${nombreMensaje}*. Turno: *${fechaTexto}* a las *${horaSeleccionada} hs*.`;
+    
+    // Abrir enlace en nueva pestaña
+    window.open(`https://wa.me/${TELEFONO_BARBERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
   };
 
   const resetApp = () => { 
@@ -272,12 +268,12 @@ const handleSaveGlobalConfig = async (e) => {
   const handleAdminDaySelect = (d) => { handleDayClick(d); setAdminView('dashboard'); const diff = d.getDate() - d.getDay(); setCurrentWeekStart(new Date(d.setDate(diff))); };
   const handlePrevWeek = () => { const d = new Date(currentWeekStart); d.setDate(d.getDate() - 7); setCurrentWeekStart(d); };
   const handleNextWeek = () => { const d = new Date(currentWeekStart); d.setDate(d.getDate() + 7); setCurrentWeekStart(d); };
-  
   const isToday = (d) => d.getDate() === new Date().getDate() && d.getMonth() === new Date().getMonth();
   const isSelectedDate = (d) => d.getDate() === selectedDateObj.getDate() && d.getMonth() === selectedDateObj.getMonth();
   const weekDays = Array.from({ length: 7 }, (_, i) => { const d = new Date(currentWeekStart); d.setDate(currentWeekStart.getDate() + i); return d; });
 
   const renderHeader = () => (<header className="app-header"><div className="header-branding"><img src={logo} alt="KTM" className="header-logo"/></div></header>);
+  
   const renderMonthCalendar = (isAdminContext = false) => {
     const daysInMonth = getDaysInMonth(viewDate);
     const firstDay = getFirstDayOfMonth(viewDate);
@@ -325,7 +321,6 @@ const handleSaveGlobalConfig = async (e) => {
 
     const turnosReales = Object.values(turnosDetalles).filter(t => t.cliente_nombre !== "BLOQUEADO");
     const totalTurnos = turnosReales.length;
-    // Solo estimación base para el dashboard
     const ingresosEstimados = totalTurnos * globalConfig.precio;
 
     return (
@@ -417,7 +412,7 @@ const handleSaveGlobalConfig = async (e) => {
           )}
         </main>
 
-        {/* MODAL CONFIG GLOBAL (PRECIOS) */}
+        {/* MODAL CONFIG GLOBAL */}
         {showConfigModal && (
             <div className="modal-overlay">
                 <div className="modal-content">
@@ -500,7 +495,6 @@ const handleSaveGlobalConfig = async (e) => {
   }
 
   // --- VISTA CLIENTE ---
-  // Calculo total dinámico (Base + Barba)
   const totalCliente = parseInt(globalConfig.precio) + (formData.barba ? parseInt(globalConfig.precio_barba) : 0);
 
   return (
@@ -558,7 +552,6 @@ const handleSaveGlobalConfig = async (e) => {
                  <div className="form-group"><label>Nombre</label><input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required autoComplete="off" /></div>
                  <div className="form-group"><label>WhatsApp</label><input type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} required autoComplete="off" /></div>
                  
-                 {/* CHECKBOX BARBA */}
                  <div className="services-selection" style={{background:'#1a1a1a', padding:'15px', borderRadius:'10px', marginTop:'20px', border:'1px solid #333'}}>
                      <label className="checkbox-item">
                          <input type="checkbox" name="barba" checked={formData.barba} onChange={handleInputChange} />
@@ -577,7 +570,18 @@ const handleSaveGlobalConfig = async (e) => {
             <div className="success-icon-container"><div className="success-checkmark">✔</div></div>
             <h2>¡Reserva Confirmada!</h2>
             <div className="success-actions">
-                <button className="whatsapp-btn" onClick={handleWhatsAppClick}>Avisar al barbero 💬</button>
+                <button 
+                    className="whatsapp-btn" 
+                    onClick={handleWhatsAppClick}
+                    // AQUI ESTA EL CAMBIO: Color negro, flex para el icono y negrita
+                    style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'black', fontWeight: '800'}}
+                >
+                    AVISAR AL BARBERO 
+                    {/* SVG DE WHATSAPP */}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.099-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                    </svg>
+                </button>
                 <button className="secondary-btn" onClick={resetApp}>Volver al inicio</button>
             </div>
             </main>

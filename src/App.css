@@ -1,572 +1,352 @@
 /* =========================================
-   1. VARIABLES & RESET
+   1. VARIABLES & RESET (Tema Dark Premium)
    ========================================= */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;800&family=Lato:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;800&family=Lato:wght@300;400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 :root {
-  --bg-body: #050505;
-  --bg-container: #121212;
-  --bg-card: #1E1E1E;
-  --bg-highlight: #1A1A1A;
-
+  /* Paleta de Colores - Barbería Gold */
+  --bg-body: #050505;       /* Negro casi puro */
+  --bg-container: #0f0f0f;  /* Fondo principal */
+  --bg-card: #181818;       /* Tarjetas */
+  --bg-input: #222222;      /* Inputs */
+  
   --text-main: #FFFFFF;
-  --text-muted: #A1A1AA;
-
+  --text-muted: #888888;
+  
+  /* Dorado Premium */
   --gold: #D4AF37;
-  --gold-hover: #C5A028;
-  --gold-dim: rgba(212, 175, 55, 0.15);
-  --gold-gradient: linear-gradient(90deg, #D4AF37, #FFE066);
-  --gold-text: #F2C94C;
-
-  --success-bg: rgba(16, 185, 129, 0.15);
-  --success-text: #34D399;
-  --border-color: #333333;
+  --gold-hover: #F2C94C;
+  --gold-dim: rgba(212, 175, 55, 0.1); /* Para fondos sutiles */
+  --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F6D365 100%);
+  
+  /* Estados */
+  --success: #10B981;
+  --error: #EF4444;
+  --border: #333333;
 }
 
 * { box-sizing: border-box; }
 
-#root { width: 100%; display: flex; justify-content: center; }
-
 body {
   margin: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif; /* Fuente moderna y legible */
   background-color: var(--bg-body);
   color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
   min-height: 100vh;
-  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
 }
 
-/* Tipografía Premium */
-h1, h2, h3,
-.dashboard-title-inline,
-.calendar-header h3,
-.stat-header,
-.section-label,
-.confirm-btn,
-.continue-btn,
-.weekday-label,
-.time-badge {
+/* Títulos con personalidad (Cinzel) */
+h1, h2, h3, .section-title, .dashboard-title-inline {
   font-family: 'Cinzel', serif;
+  font-weight: 700;
   letter-spacing: 1px;
+  color: var(--gold);
 }
 
 /* =========================================
-   2. APP CONTAINER
+   2. CONTENEDOR PRINCIPAL (Móvil First)
    ========================================= */
+#root { width: 100%; max-width: 480px; }
+
 .app-container {
   width: 100%;
-  max-width: 480px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: var(--bg-container);
   position: relative;
-  margin: 0 auto;
-  overflow-x: hidden;
-  padding-bottom: 80px;
+  padding-bottom: 90px; /* Espacio para navbar/footer */
+  box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Sombra elegante en desktop */
 }
 
-main {
-  flex: 1;
-  padding: 10px 20px;
-}
-
-/* =========================================
-   3. HEADER (CLIENTE)
-   ========================================= */
+/* Header */
 .app-header {
-  background: transparent;
-  padding: 20px 0 10px 0;
-  border: none;
-  position: sticky; top: 0; z-index: 40;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(to bottom, var(--bg-body) 80%, transparent);
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(to bottom, var(--bg-container), transparent);
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(8px);
 }
-
-.header-branding { display: flex; justify-content: center; align-items: center; }
 
 .header-logo {
-  width: 90px;
-  height: 90px;
+  width: 90px; height: 90px;
   border-radius: 50%;
   border: 2px solid var(--gold);
+  padding: 3px; /* Efecto doble borde */
   object-fit: cover;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-  transition: transform 0.2s ease;
-  margin-bottom: 5px;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
 }
-.header-logo:hover { transform: scale(1.05); border-color: var(--gold-hover); }
 
-/* =========================================
-   3b. HEADER (ADMIN - COMPACTO)
-   ========================================= */
+/* Admin Header Compacto */
 .admin-header-compact {
-  padding: 15px 25px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(0,0,0,0.85);
-  border-bottom: 1px solid #222;
+  padding: 15px 20px;
+  background: rgba(15, 15, 15, 0.95);
+  border-bottom: 1px solid var(--border);
   position: sticky; top: 0; z-index: 50;
-  backdrop-filter: blur(10px);
 }
-.header-logo-small {
-    width: 45px; 
-    height: 45px;
-    border-radius: 50%;
-    border: 1px solid var(--gold);
-    object-fit: cover;
+.header-logo-small { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--gold); }
+.dashboard-title-inline { font-size: 1.1rem; margin: 0; margin-left: 10px; color: white; }
+
+/* Config Icon Button */
+.config-icon-btn {
+  background: transparent; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 8px; border-radius: 50%; display: flex;
+  transition: 0.3s;
 }
-.dashboard-title-inline {
-    color: var(--gold-text);
-    margin: 0;
-    font-size: 1.2rem;
-    letter-spacing: 1px;
-}
-
-/* =========================================
-   4. ESTILOS DASHBOARD (ADMIN - SIMPLIFICADO)
-   ========================================= */
-
-/* Tira Semanal */
-.section-label { 
-    color: white; 
-    font-size: 0.85rem; 
-    margin: 20px 0 15px 0; 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-    border-left: 3px solid var(--gold); 
-    padding-left: 12px; 
-}
-
-.strip-container-wrapper {
-  display: flex;
-  flex-direction: row; 
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 35px;
-  width: 100%;
-  padding: 0 5px;
-}
-
-.calendar-strip {
-  flex: 1;
-  display: flex; 
-  justify-content: space-between;
-  padding: 12px 8px;
-  background: var(--bg-highlight);
-  border-radius: 18px;
-  margin: 0 15px; 
-}
-
-.strip-nav-arrow {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--gold);
-  border-radius: 50%;
-  width: 40px; 
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: 1.4rem;
-  font-family: 'Cinzel', serif;
-  transition: all 0.2s;
-  flex-shrink: 0; 
-}
-.strip-nav-arrow:hover { background: var(--gold); color: black; border-color: var(--gold); }
-
-.strip-day {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 10px 6px;
-  border-radius: 10px; cursor: pointer;
-  flex: 1; color: #666; transition: 0.3s;
-}
-.strip-dow { font-size: 0.75rem; margin-bottom: 6px; }
-.strip-num { font-size: 1.1rem; font-weight: 700; }
-.strip-day.active { background: var(--gold-gradient); color: black; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35); }
-
-
-/* Grid de Estadísticas SIMPLE (2 columnas) */
-.stats-grid-simple { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
-    gap: 15px; 
-    margin-bottom: 35px; 
-}
-
-/* Tarjetas Pequeñas */
-.stat-card {
-  background: black; /* Fondo negro */
-  border: 1px solid var(--gold); /* Borde dorado */
-  border-radius: 16px;
-  padding: 20px;
-  color: var(--gold);
-  display: flex; flex-direction: column;
-  min-height: 130px; /* Altura compacta */
-  justify-content: center; /* Centrar contenido */
-  position: relative; overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-
-.stat-header { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; opacity: 0.95; letter-spacing: 0.5px; color: var(--gold); }
-
-/* Barras y Gráficos */
-.progress-bar-bg { height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-top: 10px; width: 100%; }
-.progress-bar-fill { height: 100%; background: var(--gold-gradient); }
-.income-amount { font-size: 1.6rem; font-weight: 900; color: white; margin-top: 5px; }
-
-
-/* Lista de Turnos del Día */
-.turnos-list-container { display: flex; flex-direction: column; gap: 15px; }
-.turno-card {
-  background: black;
-  border: 1px solid var(--gold);
-  border-radius: 35px;
-  padding: 15px 25px;
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-.turno-icon { width: 45px; height: 45px; background: var(--gold); border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; color: black; margin-right: 20px; }
-.turno-info { flex: 1; }
-.t-name { color: white; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
-.t-time { color: var(--text-muted); font-size: 0.9rem; }
-.btn-confirmar { background: var(--gold-gradient); border: none; padding: 8px 16px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 0.8rem; color: black; transition: transform 0.2s; }
-.btn-confirmar:hover { transform: scale(1.05); }
-
-/* Bottom Navbar (Admin) */
-.bottom-nav {
-  position: fixed; 
-  bottom: 0; 
-  left: 50%; 
-  transform: translateX(-50%);
-  width: 100%; 
-  max-width: 480px;
-  background: var(--gold-gradient);
-  height: 70px;
-  display: flex; justify-content: space-around; align-items: center;
-  border-radius: 25px 25px 0 0;
-  box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
-  z-index: 100;
-}
-.nav-item {
-  display: flex; flex-direction: column; align-items: center;
-  color: black; opacity: 0.5; cursor: pointer;
-  font-size: 0.7rem; font-weight: 700; width: 33%; transition: all 0.3s;
-}
-.nav-item.active { opacity: 1; transform: translateY(-3px); }
-.nav-icon { font-family: 'Material Icons'; font-size: 1.8rem; margin-bottom: 4px; }
-
-/* Wrapper Calendario Completo */
-.full-calendar-wrapper { display: flex; flex-direction: column; justify-content: center; min-height: 50vh; }
-
-
-/* --- BARRA DE ACCIONES ADMIN (NUEVA) --- */
-.admin-actions-bar {
-    display: flex;
-    gap: 15px;
-    padding: 0 5px;
-    margin-bottom: 25px;
-}
-
-.action-btn {
-    flex: 1;
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: 0.2s;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.action-btn:hover {
-    background: var(--gold);
-    color: black;
-}
-
-/* --- MODALES --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background: var(--bg-card);
-    border: 1px solid var(--gold);
-    padding: 25px;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 350px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-content h3 {
-    margin-top: 0;
-    color: var(--gold);
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-}
-
-.row {
-    display: flex;
-    justify-content: space-between;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
+.config-icon-btn:hover { color: var(--gold); background: var(--bg-input); }
 
 
 /* =========================================
-   5. CALENDARIO & COMPONENTES COMUNES
+   3. CALENDARIO & FECHAS (UI Moderna)
    ========================================= */
 .calendar-container {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 20px;
-  margin-bottom: 30px;
-  width: 100%;
+  margin-bottom: 25px;
+  border: 1px solid var(--border);
 }
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.calendar-header h3 { margin: 0; color: white; font-size: 1.1rem; text-transform: uppercase; }
-.calendar-nav-btn { background: transparent; border: 1px solid var(--border-color); border-radius: 50%; width: 35px; height: 35px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-.calendar-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-.weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 15px; }
-.weekday-label { color: var(--gold); font-size: 0.8rem; font-weight: 700; }
+.calendar-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 15px;
+}
+.calendar-header h3 { font-size: 1rem; color: white; margin: 0; text-transform: uppercase; }
+
+.calendar-nav-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--gold); width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: 0.2s;
+}
+.calendar-nav-btn:hover { background: var(--gold); color: black; }
+
+/* Grilla Días */
+.weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 10px; }
+.weekday-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
 
 .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
 .day-cell {
   aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-  background: transparent; border: 1px solid transparent; border-radius: 10px;
-  color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 0; font-weight: 500; width: 100%; transition: 0.2s;
+  background: transparent; border: none; color: white;
+  font-size: 0.95rem; border-radius: 10px; cursor: pointer; transition: 0.2s;
 }
-.day-cell:hover:not(:disabled) { background: #333; color: white; }
-.day-cell.today { border-color: var(--gold); color: var(--gold); font-weight: 700; }
-.day-cell.selected { background: var(--gold); color: black; font-weight: 800; border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
-.day-cell:disabled { opacity: 0.3; cursor: default; }
+.day-cell:hover:not(:disabled) { background: var(--bg-input); }
+.day-cell.today { color: var(--gold); font-weight: 700; border: 1px solid var(--gold); }
+.day-cell.selected { background: var(--gold-gradient); color: black; font-weight: 800; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); border: none; }
+.day-cell:disabled { color: #333; cursor: default; }
 
-.slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.slot-btn {
-  background: var(--bg-card); border: 1px solid var(--border-color); color: white;
-  padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 1rem;
+/* Tira Semanal (Dashboard) */
+.strip-container-wrapper {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 25px; gap: 10px;
 }
-.slot-btn.selected { background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: black; border-color: transparent; transform: scale(1.03); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
-.slot-btn.occupied { opacity: 0.4; text-decoration: line-through; cursor: not-allowed; background: #0a0a0a; }
+.calendar-strip {
+  display: flex; gap: 5px; overflow-x: auto; padding: 5px; scrollbar-width: none;
+  flex: 1; justify-content: space-between;
+}
+.strip-day {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 45px; padding: 10px 0; border-radius: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted); cursor: pointer; transition: 0.2s;
+}
+.strip-day.active { background: var(--gold); color: black; border-color: var(--gold); transform: scale(1.05); font-weight: 700; }
+.strip-dow { font-size: 0.7rem; text-transform: uppercase; margin-bottom: 4px; }
+.strip-num { font-size: 1.1rem; }
+
 
 /* =========================================
-   6. BOTONES & FORMS
+   4. SELECCIÓN DE HORARIOS (Grilla Limpia)
    ========================================= */
+.section-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; padding-left: 5px; border-left: 2px solid var(--gold); }
+
+.slots-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  margin-bottom: 30px;
+}
+.slot-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: white; padding: 14px; border-radius: 12px;
+  font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.slot-btn:hover:not(:disabled) { border-color: var(--gold); }
+.slot-btn.selected { background: var(--gold); color: black; border-color: var(--gold); font-weight: 700; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+.slot-btn.occupied { background: #111; color: #444; border-color: #222; text-decoration: line-through; cursor: not-allowed; }
+
+
+/* =========================================
+   5. DASHBOARD ADMIN (Stats & Listas)
+   ========================================= */
+.stats-grid-simple {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; display: flex; flex-direction: column;
+  justify-content: space-between; min-height: 120px;
+}
+.stat-card.gold-border { border: 1px solid var(--gold-dim); }
+.stat-header { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.income-amount { font-size: 1.5rem; color: var(--gold); font-weight: 700; font-family: 'Cinzel', serif; }
+
+/* Progress Bar */
+.progress-bar-bg { height: 6px; background: #333; border-radius: 3px; overflow: hidden; width: 100%; margin-top: auto; }
+.progress-bar-fill { height: 100%; background: var(--gold); }
+
+/* Lista de Turnos */
+.turnos-list-container { display: flex; flex-direction: column; gap: 12px; }
+.turno-card {
+  background: var(--bg-card); border-left: 3px solid var(--border);
+  border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between;
+  transition: 0.2s;
+}
+.turno-card.free { border-left-color: var(--success); }
+.turno-card.blocked { border-left-color: var(--error); opacity: 0.6; }
+.turno-card:not(.free):not(.blocked) { border-left-color: var(--gold); border: 1px solid var(--gold-dim); }
+
+.turno-info { display: flex; flex-direction: column; gap: 4px; }
+.t-time { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1rem; color: white; }
+.t-name { font-size: 0.9rem; color: var(--text-muted); }
+
+/* Botones de Acción Admin */
+.btn-manual-add {
+  background: var(--bg-input); border: 1px solid var(--gold); color: var(--gold);
+  padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; cursor: pointer; text-transform: uppercase;
+}
+.btn-action-status {
+  background: transparent; padding: 6px 12px; border-radius: 8px;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 1px solid;
+}
+
+
+/* =========================================
+   6. FORMULARIOS & INPUTS (Minimalista)
+   ========================================= */
+.confirmation-layout { padding-top: 10px; }
+.summary-card {
+  background: linear-gradient(145deg, var(--bg-card), #1a1a1a);
+  border-radius: 16px; padding: 25px; margin-bottom: 30px;
+  border: 1px solid var(--border);
+}
+.summary-row { display: flex; align-items: center; margin-bottom: 12px; font-size: 1rem; color: #ddd; }
+.summary-row .icon { margin-right: 15px; color: var(--gold); font-size: 1.2rem; width: 24px; text-align: center; }
+
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; color: var(--text-muted); font-size: 0.85rem;
+  margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.form-group input {
+  width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+  color: white; padding: 15px; border-radius: 10px; font-size: 1rem; outline: none;
+  transition: 0.2s; font-family: 'Lato', sans-serif;
+}
+.form-group input:focus { border-color: var(--gold); background: #2a2a2a; }
+
+/* Checkboxes Custom */
+.checkbox-item {
+  display: flex; align-items: center; padding: 12px;
+  background: var(--bg-input); border-radius: 10px; margin-bottom: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: 0.2s;
+}
+.checkbox-item:hover { border-color: #444; }
+.checkbox-item input[type="checkbox"] {
+  width: 20px; height: 20px; accent-color: var(--gold); margin-right: 15px;
+}
+
+
+/* =========================================
+   7. BOTONES & BARRA INFERIOR
+   ========================================= */
+.confirm-btn {
+  background: var(--gold-gradient); color: #000;
+  width: 100%; padding: 16px; border: none; border-radius: 12px;
+  font-size: 1rem; font-weight: 800; letter-spacing: 1px;
+  text-transform: uppercase; cursor: pointer; margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  transition: transform 0.2s;
+}
+.confirm-btn:active { transform: scale(0.98); }
+
 .bottom-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; width: 100%;
+  position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
   background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px);
-  padding: 25px; border-top: 1px solid var(--border-color);
+  padding: 20px; border-top: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: center;
-  z-index: 50; transform: translateY(100%); transition: transform 0.3s;
+  z-index: 100; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .bottom-bar.visible { transform: translateY(0); }
 
-.selection-summary strong { color: var(--gold); display: block; font-size: 1.3rem; }
-.selection-summary span { color: var(--text-muted); font-size: 0.9rem; }
+.selection-summary span { display: block; font-size: 0.8rem; color: var(--text-muted); }
+.selection-summary strong { font-size: 1.2rem; color: var(--gold); font-family: 'Cinzel', serif; }
 
-.confirm-btn, .continue-btn {
-  background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: black; border: none; padding: 15px 25px;
-  border-radius: 10px; font-weight: 800; text-transform: uppercase; cursor: pointer; font-size: 1rem; width: 100%; transition: 0.2s;
+.continue-btn {
+  background: white; color: black; border: none; padding: 12px 25px;
+  border-radius: 50px; font-weight: 700; cursor: pointer;
 }
-.confirm-btn:hover, .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
-.confirm-btn { margin-top: 25px; padding: 18px; letter-spacing: 1px; }
-.continue-btn { width: auto; margin-top: 0; }
 
-.form-group { margin-bottom: 20px; }
-.form-group label { color: var(--gold); display: block; margin-bottom: 10px; font-size: 1rem; font-weight: 600; }
-.form-group input {
-  width: 100%; background: #222; border: 1px solid #444; color: white;
-  padding: 16px; border-radius: 10px; outline: none; font-size: 1.1rem; transition: 0.2s;
+/* Navbar Admin Inferior */
+.bottom-nav {
+  position: fixed; bottom: 0; width: 100%; max-width: 480px;
+  background: var(--bg-card); height: 65px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; align-items: center;
+  z-index: 90;
 }
-.form-group input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  color: var(--text-muted); font-size: 0.7rem; cursor: pointer; width: 33%;
+}
+.nav-item.active { color: var(--gold); }
+.nav-icon { font-size: 1.5rem; margin-bottom: 4px; }
 
-.summary-card { background: var(--bg-card); padding: 25px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px; }
-.summary-card h3 { color: white; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; border-bottom: 1px solid #333; padding-bottom: 15px; }
-.summary-row { display: flex; align-items: center; margin-bottom: 12px; color: #ddd; font-size: 1.1rem; }
-.summary-row .icon { margin-right: 15px; width: 25px; text-align: center; font-size: 1.3rem; }
-
-/* Success Screen */
-.success-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; min-height: 60vh; padding: 30px; }
-.success-icon-container { width: 100px; height: 100px; background: rgba(16, 185, 129, 0.1); border: 3px solid var(--success-text); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
-.success-checkmark { color: var(--success-text); font-size: 3.5rem; }
-.success-screen h2 { font-size: 2rem; margin-bottom: 15px; }
-.success-message { font-size: 1.2rem; margin-bottom: 40px; line-height: 1.6; }
-.whatsapp-btn { background: #25D366; color: white; padding: 16px; border-radius: 10px; font-weight: 800; width: 100%; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 1.1rem; transition: 0.2s; }
-.whatsapp-btn:hover { background: #20bd5a; transform: translateY(-2px); }
-.secondary-btn { background: transparent; color: var(--text-muted); padding: 15px; border: 1px solid var(--border-color); border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 15px; font-size: 1rem; transition: 0.2s; }
-.secondary-btn:hover { border-color: #666; color: white; }
 
 /* =========================================
-   7. MEDIA QUERIES (DESKTOP)
+   8. MODALES
    ========================================= */
-@media (min-width: 769px) {
-  body { padding-top: 60px; padding-bottom: 60px; }
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; backdrop-filter: blur(5px);
+}
+.modal-content {
+  background: var(--bg-card); width: 100%; max-width: 350px;
+  padding: 30px; border-radius: 20px; border: 1px solid var(--gold-dim);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-  .app-container {
-    max-width: 700px; width: 90%;
-    background: var(--bg-container);
-    border-radius: 30px; border: 1px solid #333;
-    box-shadow: 0 0 60px rgba(0,0,0,0.6);
-    min-height: auto; height: auto;
-    padding-bottom: 100px;
-  }
-
-  .app-header { background: var(--bg-container); border-radius: 30px 30px 0 0; padding: 40px 0; border-bottom: 1px solid var(--border-color); }
-  .admin-header-compact { border-radius: 30px 30px 0 0; padding: 25px 40px; }
-
-  main { padding: 50px; padding-bottom: 140px; }
-
-  .calendar-container { max-width: 450px; margin: 0 auto 40px auto; padding: 30px; }
-  .slots-grid { grid-template-columns: repeat(5, 1fr); gap: 15px; }
-
-  .bottom-bar {
-    left: 50%; right: auto; width: 100%; max-width: 700px;
-    transform: translateX(-50%) translateY(100%);
-    border-radius: 0 0 30px 30px; padding: 40px; border-top: 1px solid var(--gold);
-  }
-  .bottom-bar.visible { transform: translateX(-50%) translateY(0); }
-
-  /* Navbar Admin Desktop */
-  .bottom-nav { max-width: 700px; border-radius: 0 0 30px 30px; left: 50%; transform: translateX(-50%); height: 80px; }
-  .nav-icon { font-size: 2rem; }
-  .nav-item { font-size: 0.8rem; }
+.modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+.secondary-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+  padding: 12px; border-radius: 10px; flex: 1; cursor: pointer; font-weight: 600;
 }
 
-@media (max-width: 380px) {
-  .strip-container-wrapper { padding: 0; }
-  .strip-nav-arrow { width: 32px; height: 32px; font-size: 1.1rem; }
-  .strip-day { padding: 8px 4px; }
-  .strip-num { font-size: 1rem; }
+/* Pantalla Éxito */
+.success-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 70vh; text-align: center;
 }
-/* ... resto del CSS anterior ... */
+.success-icon-container {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+}
+.success-checkmark { font-size: 2.5rem; color: var(--success); }
+.success-actions { width: 100%; margin-top: 40px; }
 
-/* ESTILOS DE TARJETAS DE TURNO EN LISTA */
-
-.turno-card {
-  background: black;
-  border: 1px solid var(--gold);
-  border-radius: 16px;
-  padding: 15px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-/* Estado: LIBRE (Verde) */
-.turno-card.free {
-    border-color: #34D399; /* Verde */
-    background: rgba(52, 211, 153, 0.05); /* Fondo verde muy sutil */
-}
-.turno-card.free .t-name {
-    color: #34D399;
-    font-weight: 400;
-    font-size: 0.9rem;
-}
-
-/* Estado: BLOQUEADO (Rojo/Gris) */
-.turno-card.blocked {
-    border-color: #ef4444; /* Rojo */
-    background: rgba(239, 68, 68, 0.05);
-    opacity: 0.7;
-}
-.turno-card.blocked .t-name {
-    color: #ef4444;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-}
-
-/* Botones de acción en la tarjeta */
-.btn-action-status {
-    background: transparent;
-    border: 1px solid; /* El color se define inline */
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    transition: all 0.2s;
-}
-.btn-action-status:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-/* Ajustes de texto */
-.t-time {
-    font-weight: 800;
-    font-size: 1rem;
-    margin-bottom: 2px;
-    font-family: 'Lato', sans-serif;
-}
-
-/* ESTILO DEL BOTÓN DE WHATSAPP */
+/* Botón WhatsApp */
 .whatsapp-btn {
-    background-color: #25D366; /* Verde oficial de WhatsApp */
-    color: #000000; /* Color del texto NEGRO */
-    font-weight: 700; /* Texto en negrita para que se distinga bien */
-    font-size: 1rem; /* Tamaño de fuente legible */
-    padding: 12px 24px; /* Espaciado interno */
-    border: none; /* Sin borde */
-    border-radius: 50px; /* Bordes redondeados */
-    cursor: pointer; /* Cursor de mano al pasar por encima */
-    display: flex; /* Para alinear el icono y el texto */
-    align-items: center; /* Centrar verticalmente */
-    justify-content: center; /* Centrar horizontalmente */
-    gap: 10px; /* Espacio entre el texto y el icono */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Animación suave */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-    text-decoration: none; /* Quitar subrayado si usas un <a> */
+  background-color: #25D366; color: #000; font-weight: 800; font-size: 1rem;
+  padding: 16px; border: none; border-radius: 12px; cursor: pointer; width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  text-transform: uppercase; margin-bottom: 15px; transition: 0.2s;
 }
-
-/* EFECTO AL PASAR EL MOUSE (HOVER) */
-.whatsapp-btn:hover {
-    background-color: #1EBE57; /* Verde un poco más oscuro */
-    transform: translateY(-2px); /* Pequeño efecto de elevación */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
-}
-
-/* ESTILO DEL ICONO (si usas una fuente de iconos como FontAwesome o un SVG inline) */
-.whatsapp-btn i, .whatsapp-btn svg {
-    font-size: 1.2rem; /* Tamaño del icono */
-    color: #000000; /* El icono también será NEGRO */
-}
+.whatsapp-btn:hover { background-color: #20bd5a; transform: translateY(-2px); }
