@@ -37,7 +37,7 @@ function App() {
   const daysOfWeek = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'];
   const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-  // --- LOGICA ADMIN URL (#admin) ---
+  // --- LOGICA ADMIN URL ---
   useEffect(() => {
     const handleHashChange = () => {
       if (window.location.hash === '#admin') setIsAdmin(true);
@@ -71,7 +71,6 @@ function App() {
     setHoraSeleccionada(null);
   };
 
-  // Admin select day
   const handleAdminDaySelect = (day) => {
       handleDayClick(day); 
       setAdminView('dashboard'); 
@@ -80,7 +79,6 @@ function App() {
       setCurrentWeekStart(new Date(d.setDate(diff)));
   };
 
-  // Funciones semana
   const handlePrevWeek = () => {
       const newDate = new Date(currentWeekStart);
       newDate.setDate(newDate.getDate() - 7);
@@ -242,7 +240,6 @@ function App() {
 
     const totalTurnos = turnosOcupados.length;
     const ingresosEstimados = totalTurnos * PRECIO_CORTE;
-    const proximosTurnosList = HORARIOS_MOCK.filter(h => turnosOcupados.includes(h.hora)).slice(0, 3);
 
     return (
       <div className="app-container dashboard-mode">
@@ -258,31 +255,8 @@ function App() {
         <main className="admin-main">
           {adminView === 'dashboard' && (
             <>
-                <div className="stats-grid">
-                    <div className="stat-card gold-border">
-                        <div className="stat-header">PROXIMOS TURNOS ({totalTurnos})</div>
-                        <div className="mini-list">
-                            {proximosTurnosList.length > 0 ? proximosTurnosList.map((slot, i) => (
-                                <div key={i} className="mini-item">
-                                    <strong>{turnosDetalles[slot.hora]?.nombre || 'Cliente'}</strong>
-                                    <span>{slot.hora} - Corte Clásico</span>
-                                </div>
-                            )) : <div style={{color:'#666', fontSize:'0.8rem'}}>Sin turnos próximos</div>}
-                        </div>
-                    </div>
-                    <div className="right-col-stats">
-                        <div className="stat-card gold-border">
-                            <div className="stat-header">CLIENTES HOY ({totalTurnos})</div>
-                            <div className="progress-bar-bg"><div className="progress-bar-fill" style={{width: `${(totalTurnos/15)*100}%`}}></div></div>
-                        </div>
-                        <div className="stat-card gold-border">
-                            <div className="stat-header">INGRESOS HOY</div>
-                            <div className="income-amount">${ingresosEstimados.toLocaleString()}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="section-label">CALENDAR (SEMANA)</div>
+                {/* 1. CALENDARIO SEMANAL */}
+                <div className="section-label" style={{marginTop:'15px'}}>CALENDAR (SEMANA)</div>
                 <div className="strip-container-wrapper">
                     <button className="strip-nav-arrow" onClick={handlePrevWeek}>&#8249;</button>
                     <div className="calendar-strip">
@@ -299,7 +273,20 @@ function App() {
                     <button className="strip-nav-arrow" onClick={handleNextWeek}>&#8250;</button>
                 </div>
 
-                <div className="section-label">TURNOS: {getFormattedDate(selectedDateObj)}</div>
+                {/* 2. GRID DE ESTADISTICAS (SIMPLIFICADO) */}
+                <div className="stats-grid-simple">
+                    <div className="stat-card gold-border">
+                        <div className="stat-header">INGRESOS HOY</div>
+                        <div className="income-amount">${ingresosEstimados.toLocaleString()}</div>
+                    </div>
+                    <div className="stat-card gold-border">
+                        <div className="stat-header">CLIENTES HOY ({totalTurnos})</div>
+                        <div className="progress-bar-bg"><div className="progress-bar-fill" style={{width: `${(totalTurnos/15)*100}%`}}></div></div>
+                    </div>
+                </div>
+
+                {/* 3. LISTA DE TURNOS (CENTRAL) */}
+                <div className="section-label" style={{marginTop:'25px'}}>TURNOS: {getFormattedDate(selectedDateObj)}</div>
                 <div className="turnos-list-container">
                     {HORARIOS_MOCK.map((slot, index) => {
                         const isOccupied = turnosOcupados.includes(slot.hora);
@@ -316,7 +303,7 @@ function App() {
                             </div>
                         )
                     })}
-                    {turnosOcupados.length === 0 && <p style={{color:'#666', textAlign:'center', fontSize:'0.9rem', marginTop:'20px'}}>No hay turnos para este día.</p>}
+                    {turnosOcupados.length === 0 && <p style={{color:'#666', textAlign:'center', fontSize:'0.9rem', marginTop:'40px'}}>No hay turnos para este día.</p>}
                 </div>
             </>
           )}
@@ -345,7 +332,7 @@ function App() {
     );
   }
 
-  // --- VISTA CLIENTE ---
+  // --- VISTA CLIENTE (Sin cambios) ---
   return (
     <div className="app-container">
         {renderHeader()} 
