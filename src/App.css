@@ -270,6 +270,85 @@ main {
 .full-calendar-wrapper { display: flex; flex-direction: column; justify-content: center; min-height: 50vh; }
 
 
+/* --- BARRA DE ACCIONES ADMIN (NUEVA) --- */
+.admin-actions-bar {
+    display: flex;
+    gap: 15px;
+    padding: 0 5px;
+    margin-bottom: 25px;
+}
+
+.action-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.2s;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.action-btn:hover {
+    background: var(--gold);
+    color: black;
+}
+
+/* --- MODALES --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--gold);
+    padding: 25px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: var(--gold);
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
 /* =========================================
    5. CALENDARIO & COMPONENTES COMUNES
    ========================================= */
@@ -396,4 +475,98 @@ main {
   .strip-nav-arrow { width: 32px; height: 32px; font-size: 1.1rem; }
   .strip-day { padding: 8px 4px; }
   .strip-num { font-size: 1rem; }
+}
+/* ... resto del CSS anterior ... */
+
+/* ESTILOS DE TARJETAS DE TURNO EN LISTA */
+
+.turno-card {
+  background: black;
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* Estado: LIBRE (Verde) */
+.turno-card.free {
+    border-color: #34D399; /* Verde */
+    background: rgba(52, 211, 153, 0.05); /* Fondo verde muy sutil */
+}
+.turno-card.free .t-name {
+    color: #34D399;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+/* Estado: BLOQUEADO (Rojo/Gris) */
+.turno-card.blocked {
+    border-color: #ef4444; /* Rojo */
+    background: rgba(239, 68, 68, 0.05);
+    opacity: 0.7;
+}
+.turno-card.blocked .t-name {
+    color: #ef4444;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* Botones de acción en la tarjeta */
+.btn-action-status {
+    background: transparent;
+    border: 1px solid; /* El color se define inline */
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+.btn-action-status:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Ajustes de texto */
+.t-time {
+    font-weight: 800;
+    font-size: 1rem;
+    margin-bottom: 2px;
+    font-family: 'Lato', sans-serif;
+}
+
+/* ESTILO DEL BOTÓN DE WHATSAPP */
+.whatsapp-btn {
+    background-color: #25D366; /* Verde oficial de WhatsApp */
+    color: #000000; /* Color del texto NEGRO */
+    font-weight: 700; /* Texto en negrita para que se distinga bien */
+    font-size: 1rem; /* Tamaño de fuente legible */
+    padding: 12px 24px; /* Espaciado interno */
+    border: none; /* Sin borde */
+    border-radius: 50px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor de mano al pasar por encima */
+    display: flex; /* Para alinear el icono y el texto */
+    align-items: center; /* Centrar verticalmente */
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espacio entre el texto y el icono */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Animación suave */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    text-decoration: none; /* Quitar subrayado si usas un <a> */
+}
+
+/* EFECTO AL PASAR EL MOUSE (HOVER) */
+.whatsapp-btn:hover {
+    background-color: #1EBE57; /* Verde un poco más oscuro */
+    transform: translateY(-2px); /* Pequeño efecto de elevación */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+}
+
+/* ESTILO DEL ICONO (si usas una fuente de iconos como FontAwesome o un SVG inline) */
+.whatsapp-btn i, .whatsapp-btn svg {
+    font-size: 1.2rem; /* Tamaño del icono */
+    color: #000000; /* El icono también será NEGRO */
 }
