@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { HORARIOS_MOCK } from './data/mocks';
 import { supabase } from './supabaseClient';
 import './App.css';
+import logo from '/logo.png'; // <--- ASEGURATE DE QUE ESTA IMAGEN ESTÉ EN LA CARPETA SRC
 
 // --- CONFIGURACIÓN ---
 const TELEFONO_BARBERO = "5492392557958"; 
@@ -18,8 +19,8 @@ function App() {
   const [formData, setFormData] = useState({ nombre: "", telefono: "" });
 
   // --- ESTADOS PARA DATOS ---
-  const [turnosOcupados, setTurnosOcupados] = useState([]); // Array de horas ["10:00", "11:00"]
-  const [turnosDetalles, setTurnosDetalles] = useState({}); // Mapa de detalles {"10:00": {nombre: "Juan", id: 1...}}
+  const [turnosOcupados, setTurnosOcupados] = useState([]); 
+  const [turnosDetalles, setTurnosDetalles] = useState({}); 
 
   const daysOfWeek = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'];
   const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -71,12 +72,10 @@ function App() {
     return new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(date);
   };
 
-  // --- FETCH DE DATOS (LECTURA) ---
+  // --- FETCH DE DATOS ---
   const fetchTurnos = async (date) => {
     try {
       const fechaString = date.toISOString().split('T')[0];
-      
-      // CAMBIO: Pedimos '*' (todos los campos) para tener nombre y telefono
       const { data, error } = await supabase
         .from('turnos')
         .select('*')
@@ -85,10 +84,7 @@ function App() {
       if (error) {
         console.error('Error cargando turnos:', error);
       } else {
-        // 1. Lista simple para bloquear botones (Cliente)
         setTurnosOcupados(data.map(t => t.hora));
-
-        // 2. Mapa detallado para mostrar info (Admin)
         const detalles = {};
         data.forEach(t => {
             detalles[t.hora] = { 
@@ -127,20 +123,11 @@ function App() {
     setIsAdmin(false);
   };
 
-  // NUEVO: BORRAR TURNO (Solo Admin)
   const handleDeleteTurno = async (id) => {
       if (!window.confirm("¿Seguro que quieres liberar este turno?")) return;
-
-      const { error } = await supabase
-        .from('turnos')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-          alert("Error al borrar: " + error.message);
-      } else {
-          fetchTurnos(selectedDateObj); // Recargar lista
-      }
+      const { error } = await supabase.from('turnos').delete().eq('id', id);
+      if (error) alert("Error al borrar: " + error.message);
+      else fetchTurnos(selectedDateObj);
   };
 
   const handleConfirmar = async (e) => {
@@ -155,9 +142,8 @@ function App() {
           cliente_telefono: formData.telefono 
         }]);
 
-    if (error) {
-      alert("Error al reservar: " + error.message);
-    } else {
+    if (error) alert("Error al reservar: " + error.message);
+    else {
       await fetchTurnos(selectedDateObj); 
       setStep(3);
     }
@@ -179,19 +165,19 @@ function App() {
 
   // ================= RENDERIZADO =================
 
-  const renderHeader = (titulo) => (
-    <header>
-      <button className="admin-toggle" onClick={() => setIsAdmin(!isAdmin)}>
-        {isAdmin ? 'Ver Cliente' : 'Admin'}
-      </button>
-      {isAdmin && session && (
-          <button onClick={handleLogout} style={{background:'none', border:'none', color:'#ef4444', cursor:'pointer', fontSize:'0.75rem', fontWeight:'bold', marginLeft:'10px'}}>
-              SALIR
-          </button>
-      )}
-      {step === 2 && !isAdmin && <button className="back-btn" onClick={() => setStep(1)}>← Volver</button>}
-      <h1>{titulo}</h1>
-      {step === 1 && !isAdmin && <p className="subtitle">Elige un dia y horario</p>}
+  // FUNCIÓN RENDER HEADER SIMPLIFICADA
+  const renderHeader = () => (
+    <header className="app-header">
+      <div className="header-branding">
+        <img 
+            src={logo} 
+            alt="KTM Barber Shop" 
+            className="header-logo border-radius"
+            // Agregamos un onClick secreto para acceder al admin (opcional)
+            onClick={() => setIsAdmin(!isAdmin)}
+            style={{ cursor: 'pointer' }}
+        />
+      </div>
     </header>
   );
 
@@ -233,12 +219,16 @@ function App() {
     if (!session) {
       return (
         <div className="app-container">
-           <header>
-              <button className="admin-toggle" onClick={() => setIsAdmin(false)}>Ver Cliente</button>
-              <h1>Acceso Admin</h1>
+           {/* Header simplificado solo con logo */}
+           <header className="app-header">
+              <div className="header-branding">
+                 <img src={logo} alt="KTM" className="header-logo"/>
+              </div>
            </header>
+
            <main className="main-step-2">
              <div className="confirmation-layout" style={{display:'block'}}>
+               <h2 style={{textAlign: 'center', color: 'var(--gold)', fontFamily: 'Cinzel, serif', marginBottom: '20px'}}>Acceso Admin</h2>
                <form className="booking-form" onSubmit={handleLogin}>
                  <div className="form-group">
                    <label>Email</label>
@@ -249,6 +239,7 @@ function App() {
                    <input type="password" name="password" required />
                  </div>
                  <button type="submit" className="confirm-btn">Ingresar</button>
+                 <button type="button" className="secondary-btn" onClick={() => setIsAdmin(false)} style={{marginTop: '10px'}}>Cancelar</button>
                </form>
              </div>
            </main>
@@ -258,8 +249,12 @@ function App() {
 
     return (
       <div className="app-container desktop-expand">
-        {renderHeader("Panel Admin")}
+        {renderHeader()} {/* Usamos el header simple */}
         <main className="admin-main">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+            <h2 style={{color: 'var(--gold)', fontFamily: 'Cinzel, serif', margin: 0}}>Panel Admin</h2>
+            <button className="logout-btn" onClick={handleLogout} style={{border: '1px solid #ef4444', padding: '5px 10px', borderRadius: '4px', background: 'transparent', color: '#ef4444', fontWeight: 'bold', cursor: 'pointer'}}>SALIR</button>
+          </div>
           <div className="admin-dashboard">
             <div className="admin-sidebar">
               {renderCalendar()}
@@ -271,19 +266,16 @@ function App() {
               <div className="admin-grid">
                 {HORARIOS_MOCK.map((slot, index) => {
                    const isOccupied = turnosOcupados.includes(slot.hora);
-                   // Obtenemos los datos reales del mapa de detalles
                    const detalle = isOccupied ? turnosDetalles[slot.hora] : null;
 
                    return (
                     <div key={index} className={`admin-card ${!isOccupied ? 'free' : 'occupied'}`}>
                       <div className="time-badge">{slot.hora}</div>
-                      
                       <div className="client-info">
                         {!isOccupied ? (
                           <span style={{color: '#aaa', fontSize: '0.85rem'}}>Disponible</span>
                         ) : (
                           <>
-                            {/* AQUÍ MOSTRAMOS NOMBRE Y TELÉFONO REALES */}
                             <span className="client-name">{detalle?.nombre || 'Reservado'}</span>
                             <a href={`https://wa.me/${detalle?.telefono}`} target="_blank" rel="noreferrer" className="client-tel" style={{textDecoration:'none', color:'#A1A1AA'}}>
                                 📞 {detalle?.telefono || '-'}
@@ -291,9 +283,7 @@ function App() {
                           </>
                         )}
                       </div>
-
                       <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
-                        {/* Botón BORRAR solo si está ocupado */}
                         {isOccupied && (
                             <button 
                                 onClick={() => handleDeleteTurno(detalle.id)}
@@ -321,8 +311,9 @@ function App() {
   if (step === 1) {
     return (
       <div className="app-container">
-        {renderHeader("Reserva tu Turno")}
-        <main className="main-step-1">
+        {renderHeader()} {/* Usamos el header simple */}
+        {step === 2 && <button className="back-btn" onClick={() => setStep(1)} style={{margin: '10px 20px', background: 'none', border: 'none', color: '#aaa', cursor: 'pointer'}}>← Volver</button>}
+        <main className="main-step-1" style={{paddingTop: '10px'}}>
           <div className="section-title">Selecciona fecha</div>
           {renderCalendar()}
           <div className="section-title">Horarios {getFormattedDate(selectedDateObj)}</div>
@@ -358,8 +349,14 @@ function App() {
   if (step === 2) {
     return (
       <div className="app-container desktop-expand">
-        {renderHeader("Tus Datos")}
-        <main className="main-step-2">
+        {renderHeader()} {/* Usamos el header simple */}
+        <div style={{padding: '0 20px'}}>
+            <button className="back-btn" onClick={() => setStep(1)} style={{background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '10px'}}>
+                ← Volver
+            </button>
+            <h2 style={{color: 'var(--gold)', fontFamily: 'Cinzel, serif', marginTop: 0, marginBottom: '15px'}}>Tus Datos</h2>
+        </div>
+        <main className="main-step-2" style={{paddingTop: 0}}>
           <div className="confirmation-layout">
             <div className="summary-card">
               <h3>Resumen</h3>
