@@ -1,0 +1,288 @@
+/* =========================================
+   1. VARIABLES & RESET (FONT: CINZEL + LATO)
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;800&family=Lato:wght@400;700;900&display=swap');
+
+:root {
+  --bg-body: #050505;       
+  --bg-container: #121212;  
+  --bg-card: #1E1E1E;       
+  
+  --text-main: #FFFFFF;
+  --text-muted: #A1A1AA;
+  
+  --gold: #D4AF37;
+  --gold-hover: #C5A028;
+  --gold-dim: rgba(212, 175, 55, 0.15); 
+
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-text: #34D399;
+  --border-color: #333333;
+}
+
+* { box-sizing: border-box; }
+
+#root { width: 100%; display: flex; justify-content: center; }
+
+body {
+  margin: 0;
+  font-family: 'Lato', sans-serif; 
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-bottom: 20px;
+}
+
+/* Tipografía Premium */
+header h1, 
+.calendar-header h3, 
+.admin-toggle,
+.success-screen h2,
+.confirm-btn, 
+.continue-btn,
+.whatsapp-btn,
+.weekday-label {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
+}
+
+/* =========================================
+   2. APP CONTAINER (BASE MÓVIL)
+   ========================================= */
+.app-container {
+  width: 100%;
+  /* CAMBIO: Usamos 100% en móvil para aprovechar todo el borde */
+  max-width: 480px; 
+  background: var(--bg-container);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: none; /* Quitamos sombra en móvil para limpieza */
+  margin: 0 auto;
+  overflow-x: hidden; 
+}
+
+main { 
+  flex: 1; 
+  padding: 20px; /* Padding estándar */
+  padding-bottom: 100px;
+}
+
+/* =========================================
+   3. HEADER
+   ========================================= */
+header {
+  background: var(--bg-container);
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky; top: 0; z-index: 40;
+  display: flex; flex-direction: column;
+}
+
+header h1 {
+  margin: 0; font-size: 1.2rem; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 800;
+}
+.subtitle { color: var(--text-muted); font-size: 0.8rem; margin-top: 5px; }
+
+.back-btn {
+  background: none; border: none; color: white; cursor: pointer;
+  font-size: 0.8rem; padding: 0; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 5px;
+}
+.back-btn:hover { color: var(--gold); }
+
+/* =========================================
+   4. CALENDARIO (CORREGIDO)
+   ========================================= */
+.calendar-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px; /* Espacio interno controlado */
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.calendar-header h3 { margin: 0; color: white; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+
+.calendar-nav-btn {
+  background: transparent; border: 1px solid var(--border-color); border-radius: 50%;
+  width: 30px; height: 30px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.calendar-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+.weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 10px; }
+.weekday-label { color: var(--gold); font-size: 0.75rem; font-weight: 700; }
+
+.days-grid { 
+  display: grid; 
+  grid-template-columns: repeat(7, 1fr); 
+  /* CAMBIO CRÍTICO: Gap pequeño para que entren los 7 días */
+  gap: 2px; 
+}
+
+.day-cell {
+  aspect-ratio: 1; 
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid transparent; border-radius: 6px;
+  color: var(--text-muted); cursor: pointer; 
+  
+  /* CAMBIO CRÍTICO: Fuente más chica y SIN padding para que no empuje */
+  font-size: 0.9rem; 
+  padding: 0; 
+  font-weight: 500;
+  width: 100%; /* Ocupa su celda */
+}
+.day-cell:hover:not(:disabled) { background: #333; color: white; }
+.day-cell.today { border-color: var(--gold); color: var(--gold); font-weight: 700; }
+.day-cell.selected { background: var(--gold); color: black; font-weight: 800; border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);}
+.day-cell:disabled { opacity: 0.3; cursor: default; }
+
+/* =========================================
+   5. HORARIOS
+   ========================================= */
+.section-title {
+  color: var(--text-muted); font-size: 0.75rem; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 15px; font-weight: 700;
+  border-left: 3px solid var(--gold); padding-left: 10px;
+}
+
+.slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+.slot-btn {
+  background: var(--bg-card); border: 1px solid var(--border-color); color: white;
+  padding: 12px; 
+  border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s;
+  font-size: 0.95rem; 
+}
+.slot-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.slot-btn.selected { background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: black; border-color: transparent; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); transform: scale(1.02);}
+.slot-btn.occupied { opacity: 0.4; text-decoration: line-through; cursor: not-allowed; background: #0a0a0a;}
+
+/* =========================================
+   6. ADMIN & EXTRAS
+   ========================================= */
+.admin-toggle { position: absolute; top: 20px; right: 20px; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 10px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; font-weight: 700;}
+.admin-toggle:hover { background: var(--gold); color: black; }
+
+.bottom-bar {
+  position: fixed; bottom: 0; 
+  left: 0; right: 0; width: 100%;
+  background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px);
+  padding: 20px; border-top: 1px solid var(--border-color);
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 50; transform: translateY(100%); transition: transform 0.3s;
+}
+.bottom-bar.visible { transform: translateY(0); }
+
+.selection-summary strong { color: var(--gold); display: block; font-size: 1.1rem; }
+.selection-summary span { color: var(--text-muted); font-size: 0.85rem; }
+
+.confirm-btn, .continue-btn {
+  background: linear-gradient(135deg, var(--gold), var(--gold-hover)); color: black; border: none; padding: 12px 20px;
+  border-radius: 6px; font-weight: 800; text-transform: uppercase; cursor: pointer; font-size: 0.9rem;
+}
+.confirm-btn { width: 100%; padding: 16px; margin-top: 20px; letter-spacing: 1px;}
+.continue-btn:hover, .confirm-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+/* Formulario */
+.form-group label { color: var(--gold); display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600;}
+.form-group input {
+  width: 100%; background: #222; border: 1px solid #444; color: white;
+  padding: 14px; border-radius: 8px; outline: none; font-size: 1rem; transition: 0.2s;
+}
+.form-group input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2); }
+
+/* Admin Grid */
+.admin-grid { display: flex; flex-direction: column; gap: 10px; }
+.admin-card { background: var(--bg-card); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
+.admin-card.free { border-left: 3px solid var(--success-text); }
+.admin-card.occupied { border-left: 3px solid var(--gold); }
+.time-badge { color: white; font-weight: 800; font-size: 1.1rem; }
+.client-name { color: var(--gold); font-weight: 700; display: block; font-size: 0.95rem; margin-bottom: 2px;}
+.client-tel { color: #999; font-size: 0.85rem; }
+.status-label { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;}
+.status-label.free { background: var(--success-bg); color: var(--success-text); }
+.status-label.occupied { background: var(--gold-dim); color: var(--gold); }
+
+/* Success Screen */
+.success-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; min-height: 50vh; }
+.success-icon-container { width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success-text); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.success-checkmark { color: var(--success-text); font-size: 2.5rem; }
+.success-screen h2 { font-size: 1.5rem; color: var(--gold); margin-bottom: 8px; font-weight: 800; text-transform: uppercase;}
+.whatsapp-btn { background: #25D366; color: white; padding: 14px; border-radius: 8px; font-weight: 800; width: 100%; border: none; cursor: pointer; display: flex; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;}
+.secondary-btn { background: transparent; color: var(--text-muted); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; font-size: 0.9rem;}
+
+
+/* =========================================
+   7. MEDIA QUERIES (DESKTOP / TABLET)
+   ========================================= */
+@media (min-width: 769px) {
+  
+  body { padding-top: 40px; padding-bottom: 40px; }
+
+  .app-container {
+    /* "Boxed" en escritorio */
+    max-width: 600px; 
+    width: 95%;
+    border-radius: 20px; 
+    border: 1px solid #333;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5); 
+    min-height: auto;
+    height: auto;
+  }
+
+  header {
+    border-radius: 20px 20px 0 0;
+    padding: 30px;
+    flex-direction: row; justify-content: space-between;
+  }
+  .subtitle { margin: 0 0 0 20px; padding-left: 20px; border-left: 1px solid #444; }
+  .admin-toggle { position: static; }
+
+  main {
+    padding: 40px;
+    padding-bottom: 120px;
+  }
+
+  /* Calendario más compacto en escritorio */
+  .calendar-container {
+    max-width: 380px; 
+    margin: 0 auto 30px auto; 
+  }
+  
+  /* Los botones de día pueden ser un poquito más grandes en PC */
+  .day-cell { font-size: 0.95rem; } 
+
+  /* 5 Columnas para horarios */
+  .slots-grid { 
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 12px; 
+  }
+
+  .bottom-bar {
+    left: 50%;
+    right: auto;
+    width: 100%; 
+    transform: translateX(-50%) translateY(100%);
+    max-width: 600px; /* Coincide con container */
+    border-radius: 0 0 20px 20px;
+    padding: 30px;
+    border-top: 1px solid var(--gold);
+  }
+  .bottom-bar.visible { transform: translateX(-50%) translateY(0); }
+
+  .admin-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .admin-card { height: 100%; margin-bottom: 0; padding: 20px; }
+}
