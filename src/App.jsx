@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { HORARIOS_MOCK } from './data/mocks';
 import { supabase } from './supabaseClient';
 import './App.css';
-import logo from '/logo.png'; // <--- ASEGURATE DE QUE ESTA IMAGEN ESTÉ EN LA CARPETA SRC
+import logo from '/logo.png'; 
 
 // --- CONFIGURACIÓN ---
 const TELEFONO_BARBERO = "5492392557958"; 
@@ -165,20 +165,29 @@ function App() {
 
   // ================= RENDERIZADO =================
 
-  // FUNCIÓN RENDER HEADER SIMPLIFICADA
+  // 1. HEADER LIMPIO (Solo Imagen, sin click)
   const renderHeader = () => (
     <header className="app-header">
       <div className="header-branding">
         <img 
             src={logo} 
             alt="KTM Barber Shop" 
-            className="header-logo border-radius"
-            // Agregamos un onClick secreto para acceder al admin (opcional)
-            onClick={() => setIsAdmin(!isAdmin)}
-            style={{ cursor: 'pointer' }}
+            className="header-logo"
         />
       </div>
     </header>
+  );
+
+  // 2. COMPONENTE FOOTER DISCRETO
+  const renderFooterAdmin = () => (
+    <div style={{textAlign: 'center', marginTop: '40px', paddingBottom: '20px'}}>
+        <button 
+            onClick={() => setIsAdmin(true)}
+            className="hidden-admin-btn"
+        >
+            Admin Access
+        </button>
+    </div>
   );
 
   const renderCalendar = () => {
@@ -219,7 +228,6 @@ function App() {
     if (!session) {
       return (
         <div className="app-container">
-           {/* Header simplificado solo con logo */}
            <header className="app-header">
               <div className="header-branding">
                  <img src={logo} alt="KTM" className="header-logo"/>
@@ -249,7 +257,7 @@ function App() {
 
     return (
       <div className="app-container desktop-expand">
-        {renderHeader()} {/* Usamos el header simple */}
+        {renderHeader()} 
         <main className="admin-main">
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
             <h2 style={{color: 'var(--gold)', fontFamily: 'Cinzel, serif', margin: 0}}>Panel Admin</h2>
@@ -311,7 +319,7 @@ function App() {
   if (step === 1) {
     return (
       <div className="app-container">
-        {renderHeader()} {/* Usamos el header simple */}
+        {renderHeader()} 
         {step === 2 && <button className="back-btn" onClick={() => setStep(1)} style={{margin: '10px 20px', background: 'none', border: 'none', color: '#aaa', cursor: 'pointer'}}>← Volver</button>}
         <main className="main-step-1" style={{paddingTop: '10px'}}>
           <div className="section-title">Selecciona fecha</div>
@@ -333,6 +341,10 @@ function App() {
               );
             })}
           </div>
+          
+          {/* BOTON ADMIN ESCONDIDO AL FINAL */}
+          {renderFooterAdmin()}
+          
         </main>
         <div className={`bottom-bar ${horaSeleccionada ? 'visible' : ''}`}>
             <div className="selection-summary">
@@ -349,7 +361,7 @@ function App() {
   if (step === 2) {
     return (
       <div className="app-container desktop-expand">
-        {renderHeader()} {/* Usamos el header simple */}
+        {renderHeader()}
         <div style={{padding: '0 20px'}}>
             <button className="back-btn" onClick={() => setStep(1)} style={{background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '10px'}}>
                 ← Volver
@@ -376,6 +388,9 @@ function App() {
               <button type="submit" className="confirm-btn">Confirmar Reserva</button>
             </form>
           </div>
+          
+           {/* BOTON ADMIN ESCONDIDO TAMBIÉN AQUÍ */}
+           {renderFooterAdmin()}
         </main>
       </div>
     );
@@ -391,7 +406,8 @@ function App() {
           </div>
           <h2>¡Reserva Confirmada!</h2>
           <p className="success-message">
-            Te esperamos el <strong>{getFormattedDate(selectedDateObj)}</strong> a las <strong>{horaSeleccionada} hs</strong>.
+            Te esperamos el <strong>{getFormattedDate(selectedDateObj)}</strong> a las <strong>{horaSeleccionada} hs</strong>.<br></br>
+            Por favor, avisale al barbero para confirmar tu turno.
           </p>
           <div className="success-actions">
             <button className="whatsapp-btn" onClick={handleWhatsAppClick}>

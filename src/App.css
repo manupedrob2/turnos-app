@@ -96,15 +96,18 @@ main {
   align-items: center;
 }
 
+/* En tu archivo App.css, reemplaza el bloque .header-logo por este: */
+
 .header-logo {
-  width: 120px;
-  height: 120px;
+  /* CAMBIO: Tamaño reducido a 90px */
+  width: 90px;
+  height: 90px;
+  
   border-radius: 50%;
   border: 2px solid var(--gold);
   object-fit: cover;
   box-shadow: 0 4px 20px rgba(0,0,0,0.6);
   transition: transform 0.2s ease;
-  /* Un pequeño margen inferior para separar del contenido */
   margin-bottom: 5px;
 }
 
@@ -311,4 +314,20 @@ main {
     gap: 20px;
   }
   .admin-card { height: 100%; margin-bottom: 0; padding: 20px; }
+}
+
+/* --- Botón Admin Escondido (Footer) --- */
+.hidden-admin-btn {
+    background: transparent;
+    border: 1px solid transparent; /* Sin borde visible */
+    color: #222; /* Color muy oscuro para que apenas se vea sobre el fondo negro */
+    font-size: 0.7rem;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+/* Solo se ilumina un poquito si le pasas el mouse por encima (opcional) */
+.hidden-admin-btn:hover {
+    color: #444;
 }
