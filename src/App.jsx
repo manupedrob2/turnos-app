@@ -18,12 +18,28 @@ function App() {
   const [horaSeleccionada, setHoraSeleccionada] = useState(null);
   const [formData, setFormData] = useState({ nombre: "", telefono: "" });
 
-  // --- ESTADOS PARA DATOS ---
   const [turnosOcupados, setTurnosOcupados] = useState([]); 
   const [turnosDetalles, setTurnosDetalles] = useState({}); 
 
   const daysOfWeek = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'];
   const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  // --- 1. LÓGICA DE URL MÁGICA ---
+  useEffect(() => {
+    // Verificar si la URL termina en #admin al cargar
+    const handleHashChange = () => {
+      if (window.location.hash === '#admin') {
+        setIsAdmin(true);
+      }
+    };
+
+    // Chequear al inicio
+    handleHashChange();
+
+    // Escuchar cambios (por si el usuario lo escribe manualmente después de cargar)
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // --- AUTH ---
   useEffect(() => {
@@ -121,6 +137,15 @@ function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    // Limpiar la URL para que no vuelva a entrar automáticamente
+    window.location.hash = ''; 
+    // Opcional: recargar para limpiar todo estado
+    // window.location.reload(); 
+  };
+
+  const handleCancelAdmin = () => {
+      setIsAdmin(false);
+      window.location.hash = ''; // Limpiar URL
   };
 
   const handleDeleteTurno = async (id) => {
@@ -165,7 +190,6 @@ function App() {
 
   // ================= RENDERIZADO =================
 
-  // 1. HEADER LIMPIO (Solo Imagen, sin click)
   const renderHeader = () => (
     <header className="app-header">
       <div className="header-branding">
@@ -176,18 +200,6 @@ function App() {
         />
       </div>
     </header>
-  );
-
-  // 2. COMPONENTE FOOTER DISCRETO
-  const renderFooterAdmin = () => (
-    <div style={{textAlign: 'center', marginTop: '40px', paddingBottom: '20px'}}>
-        <button 
-            onClick={() => setIsAdmin(true)}
-            className="hidden-admin-btn"
-        >
-            Admin Access
-        </button>
-    </div>
   );
 
   const renderCalendar = () => {
@@ -247,7 +259,7 @@ function App() {
                    <input type="password" name="password" required />
                  </div>
                  <button type="submit" className="confirm-btn">Ingresar</button>
-                 <button type="button" className="secondary-btn" onClick={() => setIsAdmin(false)} style={{marginTop: '10px'}}>Cancelar</button>
+                 <button type="button" className="secondary-btn" onClick={handleCancelAdmin} style={{marginTop: '10px'}}>Cancelar</button>
                </form>
              </div>
            </main>
@@ -341,10 +353,7 @@ function App() {
               );
             })}
           </div>
-          
-          {/* BOTON ADMIN ESCONDIDO AL FINAL */}
-          {renderFooterAdmin()}
-          
+          {/* YA NO HAY BOTÓN ADMIN AQUÍ */}
         </main>
         <div className={`bottom-bar ${horaSeleccionada ? 'visible' : ''}`}>
             <div className="selection-summary">
@@ -388,9 +397,6 @@ function App() {
               <button type="submit" className="confirm-btn">Confirmar Reserva</button>
             </form>
           </div>
-          
-           {/* BOTON ADMIN ESCONDIDO TAMBIÉN AQUÍ */}
-           {renderFooterAdmin()}
         </main>
       </div>
     );
@@ -406,8 +412,7 @@ function App() {
           </div>
           <h2>¡Reserva Confirmada!</h2>
           <p className="success-message">
-            Te esperamos el <strong>{getFormattedDate(selectedDateObj)}</strong> a las <strong>{horaSeleccionada} hs</strong>.<br></br>
-            Por favor, avisale al barbero para confirmar tu turno.
+            Te esperamos el <strong>{getFormattedDate(selectedDateObj)}</strong> a las <strong>{horaSeleccionada} hs</strong>.
           </p>
           <div className="success-actions">
             <button className="whatsapp-btn" onClick={handleWhatsAppClick}>
