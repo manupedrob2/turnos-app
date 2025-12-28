@@ -9,7 +9,7 @@ Una aplicación web moderna y responsiva para la gestión integral de turnos de 
 
 | Vista Cliente (Reserva) | Panel de Administración |
 |:-----------------------:|:-----------------------:|
-| ![Vista Cliente](/vistaCliente.png) | ![Panel Admin](/vistaAdmin.png) |
+| ![Vista Cliente](public\vistaCliente.png) | ![Panel Admin](public\vistaCliente.png) |
 *(Asegúrate de subir capturas reales a una carpeta 'screenshots' y actualizar estas rutas)*
 
 ## ✨ Características Principales
