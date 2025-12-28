@@ -1,16 +1,15 @@
 # 💈 BarberShop Management System
 
-Una aplicación web moderna y responsiva para la gestión integral de turnos de barbería. Diseñada para facilitar la reserva de citas por parte de los clientes y ofrecer un panel de administración potente para el barbero.
+Una aplicación web moderna y responsiva para la gestión integral de turnos de barbería. 
+Diseñada para facilitar la reserva de citas por parte de los clientes y ofrecer un panel de administración potente para el barbero.
 
 ![Estado del Proyecto](https://img.shields.io/badge/Estado-En_Desarrollo-yellow?style=flat-square)
-![Licencia](https://img.shields.io/badge/Licencia-MIT-blue?style=flat-square)
 
 ## 📸 Capturas de Pantalla
 
 | Vista Cliente (Reserva) | Panel de Administración |
 |:-----------------------:|:-----------------------:|
-| ![Vista Cliente](public\vistaCliente.png) | ![Panel Admin](public\vistaCliente.png) |
-*(Asegúrate de subir capturas reales a una carpeta 'screenshots' y actualizar estas rutas)*
+| ![Vista Cliente](public\vistaCliente.png) | ![Panel Admin](public\vistaAdmin.png) |
 
 ## ✨ Características Principales
 
