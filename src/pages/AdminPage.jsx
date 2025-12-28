@@ -8,52 +8,30 @@ import DayOverrideModal from '../modals/DayOverrideModal';
 import ManualAppointmentModal from '../modals/ManualAppointmentModal';
 
 const AdminDashboard = ({ 
-    // Props de estado y datos
-    session,
-    adminView,
-    setAdminView,
-    viewDate,
-    selectedDate,
-    generatedSlots,
-    turnosDetalles,
-    turnosOcupados, // Si lo usas para stats
-    ingresosEstimados,
-    totalTurnos,
-    globalConfig,
-    dayOverride,
-    
-    // Props de Modales (Visibilidad)
-    showConfigModal,
-    setShowConfigModal,
-    showManualModal,
-    setShowManualModal,
-    showDayModal,
-    setShowDayModal,
-
-    // Handlers (Funciones)
-    onLogout,
-    handleDateSelect,
-    handleChangeMonth,
-    handleToggleBlock,
-    handleSaveGlobalConfig,
-    handleSaveDayOverride,
-    handleManualSubmit,
-    onUpdateAppointment // <--- NUEVA PROP RECIBIDA
+    // ... (props iguales)
+    session, adminView, setAdminView, viewDate, selectedDate, generatedSlots, 
+    turnosDetalles, turnosOcupados, ingresosEstimados, totalTurnos, 
+    globalConfig, dayOverride, showConfigModal, setShowConfigModal, 
+    showManualModal, setShowManualModal, showDayModal, setShowDayModal, 
+    onLogout, handleDateSelect, handleChangeMonth, handleToggleBlock, 
+    handleSaveGlobalConfig, handleSaveDayOverride, handleManualSubmit, 
+    onUpdateAppointment 
 }) => {
 
     return (
         <div className="min-h-screen bg-[#050505] text-white font-lato selection:bg-[#D4AF37] selection:text-black pb-20 lg:pb-0 min-w-[320px]">
             
-            {/* Header */}
+            {/* Header (Ahora el contenido interno está alineado) */}
             <AdminHeader 
                 onOpenConfig={() => setShowConfigModal(true)} 
                 onLogout={onLogout} 
             />
             
             {/* Contenido Principal */}
-            <main className="p-4 lg:p-6 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6 items-start">
+            {/* CLAVE: max-w-[1600px] mx-auto px-4 lg:px-6 (Igual que el Header) */}
+            <main className="max-w-[1600px] mx-auto px-4 lg:px-6 py-8 grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-8 items-start">
                 
-                {/* Columna Izquierda */}
+                {/* Columna Izquierda (Sidebar con Título Dashboard) */}
                 <AdminSidebar 
                     viewDate={viewDate}
                     selectedDate={selectedDate}
@@ -64,18 +42,18 @@ const AdminDashboard = ({
                     onOpenDayModal={() => setShowDayModal(true)}
                 />
 
-                {/* Columna Derecha */}
+                {/* Columna Derecha (Lista de Turnos) */}
                 <AdminAppointmentList 
                     date={selectedDate}
                     onManualClick={() => setShowManualModal(true)}
                     slots={generatedSlots}
                     appointmentsData={turnosDetalles}
                     onBlockAction={handleToggleBlock}
-                    onUpdateAppointment={onUpdateAppointment} // <--- PASAR A LA LISTA
+                    onUpdateAppointment={onUpdateAppointment}
                 />
             </main>
 
-            {/* --- Modales --- */}
+            {/* ... (Modales y MobileNav siguen igual) ... */}
             <ConfigModal 
                 isOpen={showConfigModal} 
                 onClose={() => setShowConfigModal(false)}
@@ -98,7 +76,6 @@ const AdminDashboard = ({
                 onSubmit={handleManualSubmit} 
             />
 
-            {/* --- Navegación Móvil --- */}
             <AdminMobileNav 
                 activeView={adminView} 
                 onViewChange={setAdminView} 
