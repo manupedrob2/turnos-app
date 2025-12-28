@@ -1,16 +1,36 @@
-# React + Vite
+# 💈 BarberShop Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una aplicación web moderna y responsiva para la gestión integral de turnos de barbería. Diseñada para facilitar la reserva de citas por parte de los clientes y ofrecer un panel de administración potente para el barbero.
 
-Currently, two official plugins are available:
+![Estado del Proyecto](https://img.shields.io/badge/Estado-En_Desarrollo-yellow?style=flat-square)
+![Licencia](https://img.shields.io/badge/Licencia-MIT-blue?style=flat-square)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📸 Capturas de Pantalla
 
-## React Compiler
+| Vista Cliente (Reserva) | Panel de Administración |
+|:-----------------------:|:-----------------------:|
+| ![Vista Cliente](./screenshots/client-view.png) | ![Panel Admin](./screenshots/admin-dashboard.png) |
+*(Asegúrate de subir capturas reales a una carpeta 'screenshots' y actualizar estas rutas)*
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Características Principales
 
-## Expanding the ESLint configuration
+### 👨‍💻 Panel de Administración (Admin Dashboard)
+* **Gestión Visual de Turnos:** Vista diaria con tarjetas intuitivas para cada horario.
+* **Control Total:** Bloquear horarios, reservar manualmente y cancelar turnos.
+* **Edición Rápida:** Modifica hora, nombre y teléfono directamente desde la tarjeta del turno.
+* **Configuración Global:** Ajusta precios, duración del servicio (intervalos), y horarios de apertura/cierre.
+* **Días Especiales:** Configura días feriados o con horarios reducidos/extendidos sin afectar la configuración general.
+* **Métricas Rápidas:** Visualización de ingresos estimados y cantidad de turnos del día.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 📱 Vista del Cliente (Booking)
+* **Interfaz Guiada:** Proceso de reserva paso a paso (Fecha -> Hora -> Datos).
+* **Disponibilidad en Tiempo Real:** Solo muestra horarios disponibles según la configuración y bloqueos del admin.
+* **Integración con WhatsApp:** Al confirmar, redirige automáticamente a WhatsApp con el mensaje del turno pre-armado.
+* **Servicios Adicionales:** Opción para agregar servicios extra (ej. Barba) actualizando el precio dinámicamente.
+
+## 🛠️ Tecnologías Utilizadas
+
+* **Frontend:** [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+* **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
+* **Base de Datos & Auth:** [Supabase](https://supabase.com/)
+* **Iconos:** Material Icons

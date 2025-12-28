@@ -1,0 +1,56 @@
+import React from 'react';
+import ClientHeader from '../components/client/ClientHeader';
+import ClientStep1 from '../components/client/ClientStep1';
+import ClientStep2 from '../components/client/ClientStep2';
+import ClientStep3 from '../components/client/ClientStep3';
+import ClientFooter from '../components/client/ClientFooter';
+
+const ClientLayout = (props) => {
+    // Props destruidas para pasarlas fácil
+    const { step, setStep, ...otherProps } = props;
+
+    return (
+        <div className="w-full min-h-screen bg-[#050505] flex justify-center overflow-hidden relative min-w-[320px]">
+            {/* Fondo */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#1a1a1a] via-[#050505] to-[#050505] opacity-80"></div>
+
+            <div className="w-full max-w-[450px] lg:max-w-[900px] relative z-10 flex flex-col min-h-screen transition-all duration-300">
+                
+                <ClientHeader step={step} onBack={() => setStep(1)} />
+
+                {step === 1 && (
+                    <ClientStep1 
+                        {...otherProps} // Pasa generatedSlots, viewDate, selectedDate, etc.
+                        onSlotSelect={props.setHoraSeleccionada}
+                    />
+                )}
+
+                {step === 2 && (
+                    <ClientStep2 
+                        selectedDate={props.selectedDate}
+                        horaSeleccionada={props.horaSeleccionada}
+                        formData={props.formData}
+                        globalConfig={props.globalConfig}
+                        onInputChange={props.handleInputChange}
+                        onSubmit={props.handleConfirmar}
+                    />
+                )}
+
+                {step === 3 && (
+                    <ClientStep3 
+                        onWhatsAppClick={props.handleWhatsAppClick} 
+                        onReset={props.resetApp} 
+                    />
+                )}
+
+                <ClientFooter 
+                    step={step} 
+                    horaSeleccionada={props.horaSeleccionada} 
+                    onContinue={() => setStep(2)} 
+                />
+            </div>
+        </div>
+    );
+};
+
+export default ClientLayout;
