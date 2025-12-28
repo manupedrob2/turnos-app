@@ -9,7 +9,7 @@ Diseñada para facilitar la reserva de citas por parte de los clientes y ofrecer
 
 | Vista Cliente (Reserva) | Panel de Administración |
 |:-----------------------:|:-----------------------:|
-| ![Vista Cliente](public\vistaCliente.png) | ![Panel Admin](public\vistaAdmin.png) |
+| ![Vista Cliente](public/vistaCliente.png) | ![Panel Admin](public/vistaAdmin.png) |
 
 ## ✨ Características Principales
 
