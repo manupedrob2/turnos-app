@@ -6,25 +6,31 @@ import ClientStep3 from '../components/client/ClientStep3';
 import ClientFooter from '../components/client/ClientFooter';
 
 const ClientLayout = (props) => {
-    // Props destruidas para pasarlas fácil
+    // Extraemos las props necesarias para el control de pasos
     const { step, setStep, ...otherProps } = props;
 
     return (
         <div className="w-full min-h-screen bg-[#050505] flex justify-center overflow-hidden relative min-w-[320px]">
-            {/* Fondo */}
+            {/* Fondo con gradiente */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#1a1a1a] via-[#050505] to-[#050505] opacity-80"></div>
 
             <div className="w-full max-w-[450px] lg:max-w-[900px] relative z-10 flex flex-col min-h-screen transition-all duration-300">
                 
+                {/* Cabecera: paso y botón volver */}
                 <ClientHeader step={step} onBack={() => setStep(1)} />
 
+                {/* PASO 1: Selección de Fecha y Hora */}
                 {step === 1 && (
                     <ClientStep1 
-                        {...otherProps} // Pasa generatedSlots, viewDate, selectedDate, etc.
+                        {...otherProps} 
+                        // SOLUCIÓN: Mapeo explícito de las funciones del calendario
+                        onDateSelect={props.handleDateSelect} 
+                        onChangeMonth={props.handleChangeMonth}
                         onSlotSelect={props.setHoraSeleccionada}
                     />
                 )}
 
+                {/* PASO 2: Formulario de Datos */}
                 {step === 2 && (
                     <ClientStep2 
                         selectedDate={props.selectedDate}
@@ -36,6 +42,7 @@ const ClientLayout = (props) => {
                     />
                 )}
 
+                {/* PASO 3: Confirmación Final */}
                 {step === 3 && (
                     <ClientStep3 
                         onWhatsAppClick={props.handleWhatsAppClick} 
@@ -43,6 +50,7 @@ const ClientLayout = (props) => {
                     />
                 )}
 
+                {/* Footer: Botón continuar (solo pasos 1 y 2) */}
                 <ClientFooter 
                     step={step} 
                     horaSeleccionada={props.horaSeleccionada} 
