@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import './App.css';
-import logo from '/logo.png'; // Asegúrate de que la ruta sea correcta (./ si está en src)
+import logo from '/logo.png'; 
 
 // CONFIGURACIÓN DEFAULT
 const DEFAULT_CONFIG = {
     precio: 10000,       // PRECIO BASE (Corte + Cejas)
     precio_barba: 4000,  // PRECIO ADICIONAL (Barba)
     hora_apertura: "09:00",
-    hora_cierre: "19:00", // Cierre lógico para agregar el último a mano
+    hora_cierre: "19:00", 
     intervalo: 40
 };
 
-// CONSTANTE TELEFONO (Asegúrate de que este número sea el correcto, sin espacios ni guiones)
+// CONSTANTE TELEFONO
 const TELEFONO_BARBERO = "5492392557958"; 
 
 function App() {
@@ -240,17 +240,13 @@ function App() {
     else { await fetchTurnos(selectedDateObj); setStep(3); }
   };
 
-  // --- FUNCIÓN WHATSAPP CORREGIDA ---
   const handleWhatsAppClick = () => {
     let nombreMensaje = formData.nombre;
-    // Agregamos info de barba si corresponde
     if (formData.barba) nombreMensaje += " (Con Barba)";
 
     const fechaTexto = new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(selectedDateObj);
-    
     const mensaje = `Hola! Soy *${nombreMensaje}*. Turno: *${fechaTexto}* a las *${horaSeleccionada} hs*.`;
     
-    // Abrir enlace en nueva pestaña
     window.open(`https://wa.me/${TELEFONO_BARBERO}?text=${encodeURIComponent(mensaje)}`, '_blank');
   };
 
@@ -268,6 +264,7 @@ function App() {
   const handleAdminDaySelect = (d) => { handleDayClick(d); setAdminView('dashboard'); const diff = d.getDate() - d.getDay(); setCurrentWeekStart(new Date(d.setDate(diff))); };
   const handlePrevWeek = () => { const d = new Date(currentWeekStart); d.setDate(d.getDate() - 7); setCurrentWeekStart(d); };
   const handleNextWeek = () => { const d = new Date(currentWeekStart); d.setDate(d.getDate() + 7); setCurrentWeekStart(d); };
+  
   const isToday = (d) => d.getDate() === new Date().getDate() && d.getMonth() === new Date().getMonth();
   const isSelectedDate = (d) => d.getDate() === selectedDateObj.getDate() && d.getMonth() === selectedDateObj.getMonth();
   const weekDays = Array.from({ length: 7 }, (_, i) => { const d = new Date(currentWeekStart); d.setDate(currentWeekStart.getDate() + i); return d; });
@@ -506,7 +503,7 @@ function App() {
             <main className="main-step-1" style={{paddingTop: '10px'}}>
             <div className="section-title">Selecciona fecha</div>
             {renderMonthCalendar(false)}
-            <div className="section-title">Horarios</div>
+            <div className="section-title">Selecciona un horario</div>
             
             {generatedSlots.length === 0 ? (
                 <div style={{textAlign:'center', padding:'20px', color:'#888', border:'1px solid #333', borderRadius:'10px'}}>Cerrado</div>
@@ -532,10 +529,8 @@ function App() {
                  <h3>Resumen</h3>
                  <div className="summary-row"><span className="icon">📅</span><span>{new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(selectedDateObj)}</span></div>
                  <div className="summary-row"><span className="icon">⏰</span><span>{horaSeleccionada} hs</span></div>
-                 <div className="summary-row">
-                     <span className="icon">✂️</span>
-                     <span>Corte + Cejas</span>
-                 </div>
+                 <div className="summary-row"><span className="icon">📍</span><span>Calle 55 553 entre 6 y 7</span></div>
+                 {/* ELIMINADO EL RENGLÓN DE "CORTE + CEJAS" */}
                  {formData.barba && (
                      <div className="summary-row">
                          <span className="icon">🧔🏻‍♂️</span>
@@ -551,38 +546,30 @@ function App() {
                <form className="booking-form" onSubmit={handleConfirmar}>
                  <div className="form-group"><label>Nombre</label><input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required autoComplete="off" /></div>
                  <div className="form-group"><label>WhatsApp</label><input type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} required autoComplete="off" /></div>
-                 
-                 <div className="services-selection" style={{background:'#1a1a1a', padding:'15px', borderRadius:'10px', marginTop:'20px', border:'1px solid #333'}}>
-                     <label className="checkbox-item">
-                         <input type="checkbox" name="barba" checked={formData.barba} onChange={handleInputChange} />
-                         <span>Agregar Barba (+${globalConfig.precio_barba})</span>
-                     </label>
-                 </div>
-
                  <button type="submit" className="confirm-btn">Confirmar Reserva</button>
                </form>
              </div>
            </main>
         )}
 
-        {step === 3 && (
+       {step === 3 && (
             <main className="success-screen">
             <div className="success-icon-container"><div className="success-checkmark">✔</div></div>
-            <h2>¡Reserva Confirmada!</h2>
+            <h2>Para confirmar tu turno, avisale al barbero presionando el boton de abajo.</h2>
             <div className="success-actions">
                 <button 
                     className="whatsapp-btn" 
-                    onClick={handleWhatsAppClick}
-                    // AQUI ESTA EL CAMBIO: Color negro, flex para el icono y negrita
+                    onClick={() => {
+                        handleWhatsAppClick(); // 1. Abre WhatsApp
+                        resetApp();            // 2. Vuelve al inicio (Home)
+                    }}
                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'black', fontWeight: '800'}}
                 >
-                    AVISAR AL BARBERO 
-                    {/* SVG DE WHATSAPP */}
+                    Enviar confirmacion
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.099-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
                     </svg>
                 </button>
-                <button className="secondary-btn" onClick={resetApp}>Volver al inicio</button>
             </div>
             </main>
         )}
