@@ -50,14 +50,6 @@ const ClientStep2 = ({ selectedDate, horaSeleccionada, formData, globalConfig, o
                     <div className={`absolute bottom-0 left-0 h-[1px] w-0 bg-[${GOLD_HEX}] transition-all duration-300 group-focus-within:w-full`}></div>
                 </div>
 
-                <label className="flex items-center gap-4 p-2 cursor-pointer group mt-2">
-                    <div className={`w-5 h-5 border border-white/30 rounded-sm flex items-center justify-center transition-all ${formData.barba ? `bg-[${GOLD_HEX}] border-[${GOLD_HEX}]` : 'group-hover:border-[${GOLD_HEX}]'}`}>
-                        {formData.barba && <span className="material-icons text-black text-xs font-bold">check</span>}
-                    </div>
-                    <input type="checkbox" name="barba" checked={formData.barba} onChange={onInputChange} className="hidden"/>
-                    <span className="text-gray-300 text-sm">Agregar Barba (+${pBarba})</span>
-                </label>
-
                 <button type="submit" className={`w-full bg-[${GOLD_HEX}] text-black font-extrabold text-sm py-4 rounded-md mt-2 uppercase tracking-[0.15em] hover:bg-[#C9A227] transition-all shadow-lg shadow-[${GOLD_HEX}]/20`}>
                     Confirmar Reserva
                 </button>
