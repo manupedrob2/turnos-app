@@ -15,7 +15,7 @@ function App() {
     selectedDateObj, viewDate, horaSeleccionada, setHoraSeleccionada,
     handleToggleBlock, handleSaveGlobalConfig, handleSaveDayOverride, 
     createAppointment, changeMonth, handleDateSelect,
-    updateAppointment // <--- CORRECCIÓN: Ahora extraemos la función correctamente
+    updateAppointment
   } = useBarberShop();
 
   // --- 2. ESTADOS DE UI ---
@@ -24,6 +24,9 @@ function App() {
   const [step, setStep] = useState(1);
   const [adminView, setAdminView] = useState('dashboard'); 
   const [formData, setFormData] = useState({ nombre: "", telefono: "", barba: false });
+
+  // Nuevo estado para evitar doble clic
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Modales
   const [showConfigModal, setShowConfigModal] = useState(false);
@@ -101,16 +104,28 @@ function App() {
       setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value })); 
   };
 
+  // --- LÓGICA DE ENVÍO PROTEGIDO (ESCENARIO 8) ---
   const onClientSubmit = async (e) => {
     e.preventDefault();
+    
+    // 1. Si ya se está enviando, frenamos clics extra
+    if (isSubmitting) return;
+
+    // 2. Activamos el bloqueo
+    setIsSubmitting(true);
+
     let nombreFinal = formData.nombre;
     if (formData.barba) nombreFinal += " (+ Barba)";
     
+    // createAppointment maneja los errores internamente con alerts
     const success = await createAppointment({
         hora: horaSeleccionada, 
         cliente_nombre: nombreFinal, 
         cliente_telefono: formData.telefono
     });
+
+    // 3. Liberamos el bloqueo (haya éxito o error)
+    setIsSubmitting(false);
 
     if (success) setStep(3);
   };
@@ -165,7 +180,7 @@ function App() {
         handleSaveGlobalConfig={onSaveConfig}
         handleSaveDayOverride={onSaveDayOverride}
         handleManualSubmit={onManualSubmit}
-        onUpdateAppointment={updateAppointment} // <--- Pasamos la función con el nombre correcto
+        onUpdateAppointment={updateAppointment}
       />
     );
   }
@@ -182,6 +197,9 @@ function App() {
         setHoraSeleccionada={setHoraSeleccionada}
         formData={formData}
         globalConfig={globalConfig}
+        
+        // Pasamos el estado de carga
+        isSubmitting={isSubmitting} 
         
         handleDateSelect={handleDateSelect}
         handleChangeMonth={changeMonth}

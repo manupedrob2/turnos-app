@@ -1,7 +1,7 @@
 import React from 'react';
 import { GOLD_HEX } from '../../constants';
 
-const ClientStep2 = ({ selectedDate, horaSeleccionada, formData, globalConfig, onInputChange, onSubmit }) => {
+const ClientStep2 = ({ selectedDate, horaSeleccionada, formData, globalConfig, onInputChange, onSubmit, isSubmitting }) => {
     // Calculamos totales aquí para limpiar la vista
     const pBase = globalConfig?.precio || 0;
     const pBarba = globalConfig?.precio_barba || 0;
@@ -50,8 +50,17 @@ const ClientStep2 = ({ selectedDate, horaSeleccionada, formData, globalConfig, o
                     <div className={`absolute bottom-0 left-0 h-[1px] w-0 bg-[${GOLD_HEX}] transition-all duration-300 group-focus-within:w-full`}></div>
                 </div>
 
-                <button type="submit" className={`w-full bg-[${GOLD_HEX}] text-black font-extrabold text-sm py-4 rounded-md mt-2 uppercase tracking-[0.15em] hover:bg-[#C9A227] transition-all shadow-lg shadow-[${GOLD_HEX}]/20`}>
-                    Confirmar Reserva
+                {/* BOTÓN ACTUALIZADO CON ESTADO DE CARGA */}
+                <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className={`w-full font-extrabold text-sm py-4 rounded-md mt-2 uppercase tracking-[0.15em] transition-all shadow-lg
+                    ${isSubmitting 
+                        ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed shadow-none' // Estilo Cargando
+                        : `bg-[${GOLD_HEX}] text-black hover:bg-[#C9A227] shadow-[${GOLD_HEX}]/20` // Estilo Normal
+                    }`}
+                >
+                    {isSubmitting ? 'Procesando...' : 'Confirmar Reserva'}
                 </button>
             </form>
         </main>

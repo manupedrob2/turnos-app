@@ -23,7 +23,6 @@ const ClientLayout = (props) => {
                 {step === 1 && (
                     <ClientStep1 
                         {...otherProps} 
-                        // SOLUCIÓN: Mapeo explícito de las funciones del calendario
                         onDateSelect={props.handleDateSelect} 
                         onChangeMonth={props.handleChangeMonth}
                         onSlotSelect={props.setHoraSeleccionada}
@@ -39,6 +38,9 @@ const ClientLayout = (props) => {
                         globalConfig={props.globalConfig}
                         onInputChange={props.handleInputChange}
                         onSubmit={props.handleConfirmar}
+                        
+                        // CLAVE: Pasamos el estado de carga al componente del formulario
+                        isSubmitting={props.isSubmitting} 
                     />
                 )}
 

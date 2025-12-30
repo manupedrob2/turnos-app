@@ -9,6 +9,16 @@ const DEFAULT_CONFIG = {
     intervalo: 40
 };
 
+// --- FUNCIÓN CLAVE PARA ARREGLAR LA ZONA HORARIA ---
+// Evita que toISOString() cambie de día por la diferencia horaria (UTC vs GMT-3)
+const getLocalDateString = (date) => {
+    if (!date) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 export const useBarberShop = () => {
     // --- ESTADOS DE DATOS ---
     const [globalConfig, setGlobalConfig] = useState(DEFAULT_CONFIG);
@@ -46,7 +56,7 @@ export const useBarberShop = () => {
             slots.push(`${h}:${m}`);
             current.setMinutes(current.getMinutes() + intervalo);
         }
-        
+     /*   
         // Lógica para el último turno colgado
         const lastSlotStr = slots[slots.length-1];
         if(lastSlotStr) {
@@ -58,7 +68,7 @@ export const useBarberShop = () => {
               const nextSlot = `${h}:${m}`;
                if (!slots.includes(nextSlot)) slots.push(nextSlot);
            }
-        }
+        }*/
         return slots;
     };
 
@@ -75,7 +85,8 @@ export const useBarberShop = () => {
     };
 
     const fetchTurnos = async (date) => {
-        const fechaString = date.toISOString().split('T')[0];
+        const fechaString = getLocalDateString(date);
+
         const { data: specialDay } = await supabase.from('dias_especiales').select('*').eq('fecha', fechaString).maybeSingle();
         setDayOverride(specialDay);
         
@@ -113,13 +124,12 @@ export const useBarberShop = () => {
     };
 
     // --- ACCIONES ---
-//Actualizar solo la hora de un turno existente
     const updateAppointment = async (id, newData) => {
         if (!id) return;
         
         const { error } = await supabase
             .from('turnos')
-            .update(newData) // newData será objeto: { hora, cliente_nombre, cliente_telefono }
+            .update(newData)
             .eq('id', id);
 
         if (!error) {
@@ -132,17 +142,23 @@ export const useBarberShop = () => {
     };
 
     const handleToggleBlock = async (time, isBlocked, isReserved, id) => {
-        const fechaString = selectedDateObj.toISOString().split('T')[0];
-        if (isReserved) { 
-            if (!window.confirm("¿Cancelar turno de cliente?")) return; 
-            await supabase.from('turnos').delete().eq('id', id); 
+        const fechaString = getLocalDateString(selectedDateObj);
+
+        // Si pasamos un ID, borramos directo (sirve para bloqueo o turno)
+        if (id) {
+             const { error } = await supabase.from('turnos').delete().eq('id', id);
+             if (error) console.error("Error borrando:", error);
+        } else {
+            // Si NO hay ID, es un bloqueo nuevo en un slot vacío
+            await supabase.from('turnos').insert([{ 
+                fecha: fechaString, 
+                hora: time, 
+                cliente_nombre: "BLOQUEADO", 
+                cliente_telefono: "" 
+            }]); 
         }
-        else if (isBlocked) { 
-            await supabase.from('turnos').delete().eq('id', id); 
-        }
-        else { 
-            await supabase.from('turnos').insert([{ fecha: fechaString, hora: time, cliente_nombre: "BLOQUEADO", cliente_telefono: "" }]); 
-        }
+        
+        // Recargar datos suavemente
         fetchTurnos(selectedDateObj);
     };
 
@@ -168,7 +184,9 @@ export const useBarberShop = () => {
     };
 
     const createAppointment = async (apptData) => {
-        const fechaString = selectedDateObj.toISOString().split('T')[0];
+        // CORRECCIÓN 3: Usar getLocalDateString
+        const fechaString = getLocalDateString(selectedDateObj);
+
         const { error } = await supabase.from('turnos').insert([{ 
             fecha: fechaString, 
             ...apptData 
@@ -205,7 +223,7 @@ export const useBarberShop = () => {
         selectedDateObj,
         viewDate,
         horaSeleccionada,
-        setHoraSeleccionada, // Setter expuesto
+        setHoraSeleccionada, 
 
         // Acciones
         handleToggleBlock,
