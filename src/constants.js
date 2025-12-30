@@ -6,5 +6,5 @@ export const DEFAULT_CONFIG = {
     intervalo: 40
 };
 
-export const TELEFONO_BARBERO = "5492392557958"; 
+export const TELEFONO_BARBERO = "5492213591226"; 
 export const GOLD_HEX = "#D4AF37"; // Úsalo en todos tus componentes
