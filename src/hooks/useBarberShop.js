@@ -9,12 +9,11 @@ const DEFAULT_CONFIG = {
     intervalo: 40
 };
 
-// --- FUNCIÓN CLAVE PARA ARREGLAR LA ZONA HORARIA ---
-// Evita que toISOString() cambie de día por la diferencia horaria (UTC vs GMT-3)
+// Evita que toISOString() cambie de día por la diferencia horaria
 const getLocalDateString = (date) => {
     if (!date) return null;
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
@@ -56,19 +55,6 @@ export const useBarberShop = () => {
             slots.push(`${h}:${m}`);
             current.setMinutes(current.getMinutes() + intervalo);
         }
-     /*   
-        // Lógica para el último turno colgado
-        const lastSlotStr = slots[slots.length-1];
-        if(lastSlotStr) {
-           const [lastH, lastM] = lastSlotStr.split(':').map(Number);
-           let lastTime = new Date(); lastTime.setHours(lastH, lastM + intervalo, 0,0);
-           if(lastTime <= end) {
-              const h = lastTime.getHours().toString().padStart(2, '0');
-              const m = lastTime.getMinutes().toString().padStart(2, '0');
-              const nextSlot = `${h}:${m}`;
-               if (!slots.includes(nextSlot)) slots.push(nextSlot);
-           }
-        }*/
         return slots;
     };
 
@@ -126,11 +112,7 @@ export const useBarberShop = () => {
     // --- ACCIONES ---
     const updateAppointment = async (id, newData) => {
         if (!id) return;
-        
-        const { error } = await supabase
-            .from('turnos')
-            .update(newData)
-            .eq('id', id);
+        const { error } = await supabase.from('turnos').update(newData).eq('id', id);
 
         if (!error) {
             await fetchTurnos(selectedDateObj);
@@ -143,13 +125,10 @@ export const useBarberShop = () => {
 
     const handleToggleBlock = async (time, isBlocked, isReserved, id) => {
         const fechaString = getLocalDateString(selectedDateObj);
-
-        // Si pasamos un ID, borramos directo (sirve para bloqueo o turno)
         if (id) {
              const { error } = await supabase.from('turnos').delete().eq('id', id);
              if (error) console.error("Error borrando:", error);
         } else {
-            // Si NO hay ID, es un bloqueo nuevo en un slot vacío
             await supabase.from('turnos').insert([{ 
                 fecha: fechaString, 
                 hora: time, 
@@ -157,8 +136,6 @@ export const useBarberShop = () => {
                 cliente_telefono: "" 
             }]); 
         }
-        
-        // Recargar datos suavemente
         fetchTurnos(selectedDateObj);
     };
 
@@ -184,9 +161,7 @@ export const useBarberShop = () => {
     };
 
     const createAppointment = async (apptData) => {
-        // CORRECCIÓN 3: Usar getLocalDateString
         const fechaString = getLocalDateString(selectedDateObj);
-
         const { error } = await supabase.from('turnos').insert([{ 
             fecha: fechaString, 
             ...apptData 
@@ -201,7 +176,6 @@ export const useBarberShop = () => {
         }
     };
 
-    // --- MANEJO DE FECHAS ---
     const changeMonth = (i) => { 
         const d = new Date(viewDate); 
         d.setMonth(d.getMonth() + i); 
@@ -213,8 +187,19 @@ export const useBarberShop = () => {
         setHoraSeleccionada(null); 
     };
 
+    // --- CÁLCULOS DE LÓGICA DE NEGOCIO (NUEVO) ---
+    const listaTurnos = turnosDetalles ? Object.values(turnosDetalles) : [];
+    
+    // 1. Calcular Ingresos Reales (Solo completados)
+    const ingresosReales = listaTurnos
+        .filter(t => t.status === 'completado')
+        .reduce((total, _) => total + (globalConfig.precio || 0), 0);
+        
+    // 2. Calcular Total de Turnos (Excluyendo bloqueados)
+    const totalTurnosReales = listaTurnos.filter(t => t.cliente_nombre !== "BLOQUEADO").length;
+
     return {
-        // Datos
+        // Datos Básicos
         globalConfig,
         generatedSlots,
         turnosDetalles,
@@ -224,6 +209,10 @@ export const useBarberShop = () => {
         viewDate,
         horaSeleccionada,
         setHoraSeleccionada, 
+
+        // Datos Calculados (NUEVO)
+        ingresosReales,
+        totalTurnosReales,
 
         // Acciones
         handleToggleBlock,

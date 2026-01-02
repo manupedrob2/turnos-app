@@ -15,7 +15,9 @@ function App() {
     selectedDateObj, viewDate, horaSeleccionada, setHoraSeleccionada,
     handleToggleBlock, handleSaveGlobalConfig, handleSaveDayOverride, 
     createAppointment, changeMonth, handleDateSelect,
-    updateAppointment
+    updateAppointment,
+    // NUEVO: Importamos el cálculo hecho en el hook
+    ingresosReales 
   } = useBarberShop();
 
   // --- 2. ESTADOS DE UI ---
@@ -25,7 +27,7 @@ function App() {
   const [adminView, setAdminView] = useState('dashboard'); 
   const [formData, setFormData] = useState({ nombre: "", telefono: "", barba: false });
 
-  // Nuevo estado para evitar doble clic
+  // Estado para evitar doble clic
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Modales
@@ -90,7 +92,6 @@ function App() {
   };
 
   const onManualSubmit = async (e) => {
-      e.preventDefault();
       const success = await createAppointment({
           hora: e.target.hora.value, 
           cliente_nombre: e.target.nombre.value, 
@@ -104,29 +105,21 @@ function App() {
       setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value })); 
   };
 
-  // --- LÓGICA DE ENVÍO PROTEGIDO (ESCENARIO 8) ---
   const onClientSubmit = async (e) => {
     e.preventDefault();
-    
-    // 1. Si ya se está enviando, frenamos clics extra
     if (isSubmitting) return;
-
-    // 2. Activamos el bloqueo
     setIsSubmitting(true);
 
     let nombreFinal = formData.nombre;
     if (formData.barba) nombreFinal += " (+ Barba)";
     
-    // createAppointment maneja los errores internamente con alerts
     const success = await createAppointment({
         hora: horaSeleccionada, 
         cliente_nombre: nombreFinal, 
         cliente_telefono: formData.telefono
     });
 
-    // 3. Liberamos el bloqueo (haya éxito o error)
     setIsSubmitting(false);
-
     if (success) setStep(3);
   };
 
@@ -148,9 +141,9 @@ function App() {
   if (isAdmin) {
     if (!session) return <LoginPage onLogin={handleLogin} />;
 
-    const turnosReales = Object.values(turnosDetalles).filter(t => t.cliente_nombre !== "BLOQUEADO");
-    const totalTurnos = turnosReales.length;
-    const ingresosEstimados = totalTurnos * globalConfig.precio;
+    // Calculamos solo el total de turnos visuales (para el contador, no para el dinero)
+    const turnosRealesList = Object.values(turnosDetalles || {}).filter(t => t.cliente_nombre !== "BLOQUEADO");
+    const totalTurnos = turnosRealesList.length;
 
     return (
       <AdminPage
@@ -161,7 +154,11 @@ function App() {
         selectedDate={selectedDateObj}
         generatedSlots={generatedSlots}
         turnosDetalles={turnosDetalles}
-        ingresosEstimados={ingresosEstimados}
+        
+        // AQUÍ EL CAMBIO: Pasamos el valor real del hook
+        // Mantenemos el nombre de prop "ingresosEstimados" para no romper AdminPage.jsx
+        ingresosEstimados={ingresosReales} 
+        
         totalTurnos={totalTurnos}
         globalConfig={globalConfig}
         dayOverride={dayOverride}
@@ -197,10 +194,7 @@ function App() {
         setHoraSeleccionada={setHoraSeleccionada}
         formData={formData}
         globalConfig={globalConfig}
-        
-        // Pasamos el estado de carga
         isSubmitting={isSubmitting} 
-        
         handleDateSelect={handleDateSelect}
         handleChangeMonth={changeMonth}
         handleInputChange={handleInputChange}

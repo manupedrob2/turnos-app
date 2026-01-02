@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // Agregamos useState
 import AdminHeader from '../components/admin/AdminHeader';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminAppointmentList from '../components/admin/AdminAppointmentList';
@@ -8,9 +8,10 @@ import DayOverrideModal from '../modals/DayOverrideModal';
 import ManualAppointmentModal from '../modals/ManualAppointmentModal';
 
 const AdminDashboard = ({ 
-    // ... (props iguales)
     session, adminView, setAdminView, viewDate, selectedDate, generatedSlots, 
-    turnosDetalles, turnosOcupados, ingresosEstimados, totalTurnos, 
+    turnosDetalles, turnosOcupados, 
+    ingresosEstimados, 
+    totalTurnos, 
     globalConfig, dayOverride, showConfigModal, setShowConfigModal, 
     showManualModal, setShowManualModal, showDayModal, setShowDayModal, 
     onLogout, handleDateSelect, handleChangeMonth, handleToggleBlock, 
@@ -18,34 +19,43 @@ const AdminDashboard = ({
     onUpdateAppointment 
 }) => {
 
+    // 1. NUEVO ESTADO: Para guardar la hora del turno donde hicimos click en "+"
+    const [initialTime, setInitialTime] = useState('');
+
+    // 2. NUEVO HANDLER: Abre el modal y setea la hora pre-seleccionada
+    const handleOpenManualModal = (time = '') => {
+        setInitialTime(time);
+        setShowManualModal(true);
+    };
+
     return (
         <div className="min-h-screen bg-[#050505] text-white font-lato selection:bg-[#D4AF37] selection:text-black pb-20 lg:pb-0 min-w-[320px]">
             
-            {/* Header (Ahora el contenido interno está alineado) */}
+            {/* Header */}
             <AdminHeader 
                 onOpenConfig={() => setShowConfigModal(true)} 
                 onLogout={onLogout} 
             />
             
             {/* Contenido Principal */}
-            {/* CLAVE: max-w-[1600px] mx-auto px-4 lg:px-6 (Igual que el Header) */}
             <main className="max-w-[1600px] mx-auto px-4 lg:px-6 py-8 grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-8 items-start">
                 
-                {/* Columna Izquierda (Sidebar con Título Dashboard) */}
+                {/* Columna Izquierda */}
                 <AdminSidebar 
                     viewDate={viewDate}
                     selectedDate={selectedDate}
                     onDateSelect={handleDateSelect}
                     onChangeMonth={handleChangeMonth}
-                    ingresos={ingresosEstimados}
+                    ingresos={ingresosEstimados} 
                     turnos={totalTurnos}
                     onOpenDayModal={() => setShowDayModal(true)}
                 />
 
-                {/* Columna Derecha (Lista de Turnos) */}
+                {/* Columna Derecha */}
                 <AdminAppointmentList 
                     date={selectedDate}
-                    onManualClick={() => setShowManualModal(true)}
+                    // CAMBIO: Ahora pasamos nuestra función que acepta la hora
+                    onManualClick={handleOpenManualModal} 
                     slots={generatedSlots}
                     appointmentsData={turnosDetalles}
                     onBlockAction={handleToggleBlock}
@@ -53,7 +63,7 @@ const AdminDashboard = ({
                 />
             </main>
 
-            {/* ... (Modales y MobileNav siguen igual) ... */}
+            {/* Modales */}
             <ConfigModal 
                 isOpen={showConfigModal} 
                 onClose={() => setShowConfigModal(false)}
@@ -70,10 +80,15 @@ const AdminDashboard = ({
                 globalConfig={globalConfig}
             />
 
+            {/* MODIFICADO: Pasamos la hora inicial y limpiamos al cerrar */}
             <ManualAppointmentModal 
                 isOpen={showManualModal} 
-                onClose={() => setShowManualModal(false)} 
-                onSubmit={handleManualSubmit} 
+                onClose={() => {
+                    setShowManualModal(false);
+                    setInitialTime(''); // Limpiamos la hora al cerrar
+                }}
+                onSubmit={handleManualSubmit}
+                initialTime={initialTime} 
             />
 
             <AdminMobileNav 
