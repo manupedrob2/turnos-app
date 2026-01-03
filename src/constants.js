@@ -1,8 +1,7 @@
 export const DEFAULT_CONFIG = {
-    precio: 10000,
-    precio_barba: 4000,
+    precio: 15000,
     hora_apertura: "09:00",
-    hora_cierre: "19:00",
+    hora_cierre: "20:00",
     intervalo: 40
 };
 

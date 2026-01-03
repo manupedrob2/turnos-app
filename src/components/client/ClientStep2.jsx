@@ -1,11 +1,10 @@
 import React from 'react';
 import { GOLD_HEX } from '../../constants';
+import { DEFAULT_CONFIG } from '../../constants';
 
 const ClientStep2 = ({ selectedDate, horaSeleccionada, formData, globalConfig, onInputChange, onSubmit, isSubmitting }) => {
     // Calculamos totales aquí para limpiar la vista
-    const pBase = globalConfig?.precio || 0;
-    const pBarba = globalConfig?.precio_barba || 0;
-    const total = pBase + (formData.barba ? pBarba : 0);
+    const precio = DEFAULT_CONFIG.precio;
 
     return (
         <main className="flex-1 px-6 pb-8 animate-[fadeIn_0.5s_ease-out] flex flex-col items-center lg:block lg:max-w-lg lg:mx-auto lg:w-full">
@@ -36,7 +35,7 @@ const ClientStep2 = ({ selectedDate, horaSeleccionada, formData, globalConfig, o
 
                 <div className="mt-6 pt-3 border-t border-white/10 flex justify-between items-end relative z-10">
                     <span className="text-gray-400 text-xs uppercase tracking-wider pb-1">Total a pagar</span>
-                    <span className={`text-[${GOLD_HEX}] text-2xl font-bold font-cinzel`}>${total}</span>
+                    <span className={`text-[${GOLD_HEX}] text-2xl font-bold font-cinzel`}>${precio}</span>
                 </div>
             </div>
 

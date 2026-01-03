@@ -55,6 +55,7 @@ export const useBarberShop = () => {
             slots.push(`${h}:${m}`);
             current.setMinutes(current.getMinutes() + intervalo);
         }
+
         return slots;
     };
 

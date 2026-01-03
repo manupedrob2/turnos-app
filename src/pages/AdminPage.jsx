@@ -28,6 +28,8 @@ const AdminDashboard = ({
         setShowManualModal(true);
     };
 
+    
+
     return (
         <div className="min-h-screen bg-[#050505] text-white font-lato selection:bg-[#D4AF37] selection:text-black pb-20 lg:pb-0 min-w-[320px]">
             
@@ -62,14 +64,14 @@ const AdminDashboard = ({
                     onUpdateAppointment={onUpdateAppointment}
                 />
             </main>
-
-            {/* Modales */}
+{/* 
+            
             <ConfigModal 
                 isOpen={showConfigModal} 
                 onClose={() => setShowConfigModal(false)}
                 onSave={handleSaveGlobalConfig}
                 config={globalConfig}
-            />
+            /> */}
 
             <DayOverrideModal 
                 isOpen={showDayModal}

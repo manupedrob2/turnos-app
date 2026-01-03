@@ -23,13 +23,13 @@ const AdminHeader = ({ onOpenConfig, onLogout }) => {
 
                 {/* Derecha: Acciones */}
                 <div className="flex items-center gap-4">
-                    <button 
+                    {/* <button 
                         onClick={onOpenConfig}
                         className="text-gray-400 hover:text-white transition-colors"
                         title="Configuración"
                     >
                         <span className="material-icons">settings</span>
-                    </button>
+                    </button> */}
                     <button 
                         onClick={onLogout}
                         className="text-gray-400 hover:text-red-400 transition-colors flex items-center gap-1"
