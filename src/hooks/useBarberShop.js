@@ -5,7 +5,7 @@ const DEFAULT_CONFIG = {
     precio: 15000,
     precio_barba: 4000,
     hora_apertura: "09:00",
-    hora_cierre: "19:00",
+    hora_cierre: "20:00",
     intervalo: 40
 };
 
@@ -37,24 +37,53 @@ export const useBarberShop = () => {
         fetchGlobalConfig();
     }, []);
 
-    useEffect(() => {
-        fetchTurnos(selectedDateObj);
+     useEffect(() => {
+        // Solo buscamos turnos si ya tenemos una configuración cargada
+        if (globalConfig) {
+            fetchTurnos(selectedDateObj);
+        }
     }, [selectedDateObj, globalConfig]);
 
     // --- FUNCIONES AUXILIARES ---
     const generateTimeSlots = (startConf, endConf, intervalo) => {
+        // Validación de seguridad
+        if (!startConf || !endConf || !intervalo) return [];
+
         const slots = [];
         const [startH, startM] = startConf.split(':').map(Number);
         const [endH, endM] = endConf.split(':').map(Number);
-        let current = new Date(); current.setHours(startH, startM, 0, 0);
-        const end = new Date(); end.setHours(endH, endM, 0, 0);
         
-        while (current <= end) { 
+        let current = new Date(); 
+        current.setHours(startH, startM, 0, 0);
+        
+        const end = new Date(); 
+        end.setHours(endH, endM, 0, 0);
+        
+        // Usamos '<' para que el último turno no termine DESPUÉS del cierre
+        while (current < end) { 
+            // Verificamos que el turno no termine después de la hora de cierre
+            const turnoFin = new Date(current);
+            turnoFin.setMinutes(turnoFin.getMinutes() + Number(intervalo));
+            
+            // Si el turno termina después de la hora de cierre, cortamos (o usar <= en el while)
+            if (turnoFin > end) break;
+
             const h = current.getHours().toString().padStart(2, '0');
             const m = current.getMinutes().toString().padStart(2, '0');
             slots.push(`${h}:${m}`);
-            current.setMinutes(current.getMinutes() + intervalo);
+            current.setMinutes(current.getMinutes() + Number(intervalo));
         }
+
+        // --- ZONA DE HARDCODEO ---
+        const turnoHardcodeado = "19:20";
+
+        // Solo lo agregamos si no existe ya
+        if (!slots.includes(turnoHardcodeado)) {
+            slots.push(turnoHardcodeado);
+        }
+
+        // Ordenamos
+        slots.sort();
 
         return slots;
     };
